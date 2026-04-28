@@ -685,20 +685,17 @@
       const params = state.routeParams;
       const isSuperAdmin = state.currentRole === 'super_admin';
 
-      // Admin routes
       if (route === '/') return isSuperAdmin ? renderAdminDashboard() : renderClientDashboard();
       if (route === '/clients') return renderClientsPage();
       if (route === '/projects') return renderProjectsPage();
       if (route === '/databases') return renderDatabasesPage();
       if (route === '/domains') return renderDomainsPage();
       
-      // Dynamic routes
       if (params[0] === 'clients' && params[1]) return renderClientDetailPage(params[1]);
       if (params[0] === 'projects' && params[1]) return renderProjectDetailPage(params[1]);
       if (params[0] === 'databases' && params[1]) return renderDatabaseDetailPage(params[1]);
       if (params[0] === 'domains' && params[1] === 'manage' && params[2]) return renderManageDNSPage(params[2]);
       
-      // Settings routes
       if (params[0] === 'settings') {
         const section = params[1] || 'profile';
         return renderSettingsPage(section);
@@ -2015,6 +2012,15 @@
         }
       }
     });
+
+    // ============================================
+    // API FETCH
+    // ============================================
+    fetch("https://api.luviio.com")
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+      });
 
     // Initial render
     render();
