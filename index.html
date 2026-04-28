@@ -23,337 +23,432 @@
     * { font-family: 'Inter', system-ui, sans-serif; }
     
     body {
-      background: #ffffff;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
       color: #0f172a;
+      min-height: 100vh;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
-    
+
+    /* Liquid Glass Effects */
+    .glass {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.02);
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      border-radius: 20px;
+      box-shadow: 
+        0 10px 40px -10px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.95),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.03);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .glass-card:hover {
+      background: rgba(255, 255, 255, 0.8);
+      border-color: rgba(255, 255, 255, 0.85);
+      transform: translateY(-2px);
+      box-shadow: 
+        0 20px 50px -12px rgba(0, 0, 0, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 1),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.04);
+    }
+
+    .glass-sidebar {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border-right: 1px solid rgba(255, 255, 255, 0.5);
+      box-shadow: 4px 0 24px rgba(0, 0, 0, 0.04);
+    }
+
+    .glass-header {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+    }
+
+    .glass-input {
+      background: rgba(248, 250, 252, 0.6);
+      backdrop-filter: blur(10px);
+      border: 1.5px solid rgba(226, 232, 240, 0.8);
+      transition: all 0.25s ease;
+      border-radius: 14px;
+    }
+
+    .glass-input:focus {
+      background: rgba(255, 255, 255, 0.9);
+      border-color: rgba(15, 23, 42, 0.3);
+      box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.05), 0 0 20px rgba(0,0,0,0.03);
+      outline: none;
+    }
+
+    .glass-btn-primary {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 
+        0 4px 16px -2px rgba(15, 23, 42, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .glass-btn-primary:hover {
+      transform: translateY(-1px) scale(1.01);
+      box-shadow: 
+        0 8px 24px -4px rgba(15, 23, 42, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    .glass-btn-secondary {
+      background: rgba(255, 255, 255, 0.8);
+      color: #0f172a;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      transition: all 0.25s ease;
+    }
+
+    .glass-btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.95);
+      border-color: rgba(203, 213, 225, 0.8);
+      transform: translateY(-1px);
+    }
+
+    .glass-table {
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      overflow: hidden;
+    }
+
+    .table-row-glass {
+      transition: all 0.2s ease;
+      border-bottom: 1px solid rgba(241, 245, 249, 0.5);
+    }
+
+    .table-row-glass:hover {
+      background: rgba(248, 250, 252, 0.6);
+      backdrop-filter: blur(8px);
+    }
+
+    .status-dot {
+      position: relative;
+    }
+
+    .status-dot::after {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 50%;
+      animation: pulse-ring 2s ease-out infinite;
+    }
+
+    @keyframes pulse-ring {
+      0% { transform: scale(1); opacity: 0.4; }
+      100% { transform: scale(2); opacity: 0; }
+    }
+
+    /* Scrollbar */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
-    ::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-    
+    ::-webkit-scrollbar-thumb { background: rgba(203, 213, 225, 0.6); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.8); }
+
+    /* Animations */
     @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(12px); }
+      from { opacity: 0; transform: translateY(16px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    
-    @keyframes slideInRight {
-      from { opacity: 0; transform: translateX(20px); }
-      to { opacity: 1; transform: translateX(0); }
-    }
-    
+
     @keyframes scaleIn {
-      from { opacity: 0; transform: scale(0.95); }
+      from { opacity: 0; transform: scale(0.96); }
       to { opacity: 1; transform: scale(1); }
     }
-    
+
     @keyframes shimmer {
       0% { background-position: -200% 0; }
       100% { background-position: 200% 0; }
     }
-    
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
     }
-    
-    .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
-    .animate-fade-in-up { animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-    .animate-slide-right { animation: slideInRight 0.3s ease-out forwards; }
-    .animate-scale-in { animation: scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-    .animate-spin { animation: spin 1s linear infinite; }
-    
+
+    .animate-fade-in-up { animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .animate-scale-in { animation: scaleIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .animate-float { animation: float 6s ease-in-out infinite; }
+
     .stagger-1 { animation-delay: 0.05s; opacity: 0; }
     .stagger-2 { animation-delay: 0.1s; opacity: 0; }
     .stagger-3 { animation-delay: 0.15s; opacity: 0; }
     .stagger-4 { animation-delay: 0.2s; opacity: 0; }
     .stagger-5 { animation-delay: 0.25s; opacity: 0; }
     .stagger-6 { animation-delay: 0.3s; opacity: 0; }
-    
-    .card {
-      background: #ffffff;
-      border: 1px solid #f1f5f9;
-      border-radius: 16px;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    
-    .card-hover:hover {
-      border-color: #e2e8f0;
-      box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.06);
-      transform: translateY(-1px);
-    }
-    
-    .btn-primary {
-      background: #0f172a;
-      color: #ffffff;
-      transition: all 0.2s ease;
-    }
-    .btn-primary:hover {
-      background: #1e293b;
-      box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.2);
-      transform: translateY(-1px);
-    }
-    .btn-primary:active {
-      transform: translateY(0) scale(0.98);
-    }
-    .btn-primary:disabled {
-      background: #94a3b8;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-    
-    .btn-secondary {
-      background: #ffffff;
-      color: #0f172a;
-      border: 1px solid #e2e8f0;
-      transition: all 0.2s ease;
-    }
-    .btn-secondary:hover {
-      background: #f8fafc;
-      border-color: #cbd5e1;
-    }
-    
-    .input-field {
-      border: 1.5px solid #e2e8f0;
-      background: #ffffff;
-      transition: all 0.2s ease;
-      border-radius: 12px;
-    }
-    .input-field:focus {
-      border-color: #0f172a;
-      box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.08);
-      outline: none;
-    }
-    
-    .nav-item {
-      transition: all 0.15s ease;
-      border-left: 3px solid transparent;
-    }
-    .nav-item.active {
-      background: #f8fafc;
-      border-left-color: #0f172a;
-      color: #0f172a;
-      font-weight: 600;
-    }
-    .nav-item:not(.active):hover {
-      background: #f8fafc;
-      color: #334155;
-    }
-    
-    .status-pulse {
-      position: relative;
-    }
-    .status-pulse::after {
-      content: '';
-      position: absolute;
-      inset: -3px;
-      border-radius: 50%;
-      background: inherit;
-      opacity: 0.2;
-      animation: pulse-ring 2s ease-out infinite;
-    }
-    @keyframes pulse-ring {
-      0% { transform: scale(1); opacity: 0.2; }
-      100% { transform: scale(1.8); opacity: 0; }
-    }
-    
-    .table-row {
-      transition: background-color 0.15s ease;
-    }
-    .table-row:hover {
-      background: #f8fafc;
-    }
-    
-    .modal-backdrop {
-      background: rgba(15, 23, 42, 0.5);
-      backdrop-filter: blur(4px);
-    }
-    
-    .drawer-overlay {
-      background: rgba(15, 23, 42, 0.3);
-      backdrop-filter: blur(2px);
-    }
-    
-    .progress-bar {
-      transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    
-    .breadcrumb-link {
-      color: #64748b;
-      transition: color 0.15s ease;
-    }
-    .breadcrumb-link:hover {
-      color: #0f172a;
-    }
-    
-    .settings-nav-item {
-      transition: all 0.15s ease;
-      border-left: 2px solid transparent;
-    }
-    .settings-nav-item.active {
-      background: #f8fafc;
-      border-left-color: #0f172a;
-      color: #0f172a;
-      font-weight: 600;
-    }
-    .settings-nav-item:not(.active):hover {
-      background: #f8fafc;
-      color: #334155;
-    }
-    
+
+    /* Skeleton Loading */
     .skeleton {
-      background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+      background: linear-gradient(90deg, 
+        rgba(241, 245, 249, 0.8) 25%, 
+        rgba(226, 232, 240, 0.9) 50%, 
+        rgba(241, 245, 249, 0.8) 75%);
       background-size: 200% 100%;
       animation: shimmer 1.5s infinite;
-      border-radius: 8px;
+      border-radius: 10px;
     }
-    
+
     .skeleton-text {
-      background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+      background: linear-gradient(90deg, 
+        rgba(241, 245, 249, 0.8) 25%, 
+        rgba(226, 232, 240, 0.9) 50%, 
+        rgba(241, 245, 249, 0.8) 75%);
       background-size: 200% 100%;
       animation: shimmer 1.5s infinite;
       border-radius: 6px;
       height: 14px;
     }
-    
-    .skeleton-circle {
-      background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.5s infinite;
-      border-radius: 50%;
+
+    /* Nav Item Active State */
+    .nav-item {
+      position: relative;
+      transition: all 0.25s ease;
+      border-left: 3px solid transparent;
     }
-    
+
+    .nav-item.active {
+      background: linear-gradient(90deg, rgba(15, 23, 42, 0.08), transparent);
+      border-left-color: #0f172a;
+      color: #0f172a;
+      font-weight: 600;
+    }
+
+    .nav-item:not(.active):hover {
+      background: rgba(248, 250, 252, 0.8);
+      color: #334155;
+    }
+
+    /* Modal Backdrop */
+    .modal-backdrop {
+      background: rgba(15, 23, 42, 0.4);
+      backdrop-filter: blur(8px);
+    }
+
+    /* Progress Bar */
+    .progress-bar {
+      transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      background: linear-gradient(90deg, #0f172a, #334155);
+    }
+
+    /* Toast Notifications */
     .toast-enter {
-      animation: fadeInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: fadeInUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
-    .toast-exit {
-      animation: fadeIn 0.2s ease reverse forwards;
-    }
-    
+
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: 0.01ms !important;
         transition-duration: 0.01ms !important;
       }
     }
-    
-    .chart-bar {
-      transition: height 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-      background: #0f172a;
-      border-radius: 6px 6px 0 0;
+
+    /* Icon Container */
+    .icon-box {
+      background: linear-gradient(135deg, rgba(248, 250, 252, 0.9), rgba(241, 245, 249, 0.9));
+      border: 1px solid rgba(226, 232, 240, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   </style>
 </head>
-<body class="min-h-screen antialiased">
+<body class="antialiased">
   <div id="app"></div>
 
   <script>
     // ============================================
-    // API ENDPOINT
+    // CONFIGURATION & STATE
     // ============================================
-    const API_URL = "https://api.luviio.com";
-
-    // ============================================
-    // APP STATE
-    // ============================================
+    const API_BASE = "https://api.luviio.com";
+    
     const state = {
       currentView: 'login',
       currentRole: null,
-      route: '',
+      route: '/',
       routeParams: {},
       sidebarOpen: true,
       mobileSidebarOpen: false,
-      notificationsOpen: false,
-      profileDropdownOpen: false,
       activeModal: null,
       selectedItem: null,
       searchQuery: '',
-      // Live data from API
-      data: null,
+      data: { clients: [], projects: [], databases: [], domains: [], settings: {} },
       loading: false,
       error: null,
       toasts: []
     };
 
-    // ============================================
-    // USER CONTEXT
-    // ============================================
     const users = {
       super_admin: { id: 1, name: 'Sarah Chen', email: 'sarah@cloudstack.io', role: 'super_admin', company: 'CloudStack' },
       client_user: { id: 2, name: 'Michael Torres', email: 'michael@acmecorp.com', role: 'client_user', company: 'Acme Corp' }
     };
 
     // ============================================
-    // DATA ACCESS LAYER
+    // ICON SYSTEM (Lucide-style)
+    // ============================================
+    const Icons = {
+      logo: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg>`,
+      
+      dashboard: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>`,
+      
+      users: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>`,
+      
+      folder: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>`,
+      
+      database: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>`,
+      
+      globe: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10A15.3 15.3 0 0112 2z"/></svg>`,
+      
+      settings: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>`,
+      
+      search: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>`,
+      
+      refresh: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>`,
+      
+      logout: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>`,
+      
+      menu: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>`,
+      
+      chevronRight: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`,
+      
+      chevronDown: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>`,
+      
+      close: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
+      
+      plus: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`,
+      
+      check: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
+      
+      alertCircle: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+      
+      info: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`,
+      
+      warning: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
+      
+      server: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>`,
+      
+      activity: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>`,
+      
+      trendingUp: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>`,
+      
+      clock: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
+      
+      mail: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>`,
+      
+      shield: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+      
+      zap: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`,
+      
+      copy: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>`
+    };
+
+    // ============================================
+    // UTILITY FUNCTIONS
     // ============================================
     function getData(key) {
-      if (!state.data) return [];
-      const val = state.data[key];
-      if (Array.isArray(val)) return val;
-      return [];
+      return state.data[key] || [];
     }
 
     function findItem(key, id) {
       return getData(key).find(item => String(item.id) === String(id));
     }
 
-    function filterBy(key, field, value) {
-      return getData(key).filter(item => String(item[field]) === String(value));
-    }
-
     function getUser() {
       return state.currentRole === 'super_admin' ? users.super_admin : users.client_user;
     }
 
-    // ============================================
-    // API FETCH
-    // ============================================
-    async function fetchAPI() {
-      state.loading = true;
-      state.error = null;
-      render();
-
-      try {
-        const response = await fetch(API_URL);
-        if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        const data = await response.json();
-        state.data = normalizeData(data);
-        state.loading = false;
-        state.error = null;
-        render();
-        return data;
-      } catch (err) {
-        state.loading = false;
-        state.error = err.message;
-        render();
-        showToast('Failed to load data: ' + err.message, 'error');
-        return null;
-      }
+    function getInitials(name) {
+      if (!name) return '?';
+      return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
     }
 
-    function normalizeData(raw) {
-      if (Array.isArray(raw)) {
-        return { clients: raw, projects: [], databases: [], domains: [], activities: [], notifications: [] };
-      }
-      if (raw && typeof raw === 'object') {
-        return {
-          clients: raw.clients || raw.data || [],
-          projects: raw.projects || [],
-          databases: raw.databases || [],
-          domains: raw.domains || [],
-          activities: raw.activities || [],
-          notifications: raw.notifications || []
-        };
-      }
-      return { clients: [], projects: [], databases: [], domains: [], activities: [], notifications: [] };
+    function capitalize(str) {
+      if (!str) return '';
+      return str.charAt(0).toUpperCase() + str.slice(1).replace(/_/g, ' ');
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '-';
+      try { return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); }
+      catch { return dateStr; }
+    }
+
+    function getFieldValue(item, field, fallback = '-') {
+      if (!item) return fallback;
+      const val = item[field];
+      if (val === undefined || val === null || val === '') return fallback;
+      return val;
+    }
+
+    function safeNum(val, fallback = 0) {
+      const n = parseInt(val);
+      return isNaN(n) ? fallback : n;
+    }
+
+    function safeFloat(val, fallback = 0) {
+      const n = parseFloat(val);
+      return isNaN(n) ? fallback : n;
+    }
+
+    function detectRoleByEmail(email) {
+      const adminEmails = ['sarah@cloudstack.io', 'admin@cloudstack.io'];
+      return adminEmails.includes(email.toLowerCase()) ? 'super_admin' : 'client_user';
+    }
+
+    function getStatusColor(status) {
+      if (!status) return 'bg-slate-100/80 text-slate-600 border-slate-300/50';
+      const s = status.toLowerCase();
+      const colors = {
+        active: 'bg-emerald-50/80 text-emerald-700 border-emerald-300/60',
+        running: 'bg-emerald-50/80 text-emerald-700 border-emerald-300/60',
+        configured: 'bg-emerald-50/80 text-emerald-700 border-emerald-300/60',
+        online: 'bg-emerald-50/80 text-emerald-700 border-emerald-300/60',
+        live: 'bg-emerald-50/80 text-emerald-700 border-emerald-300/60',
+        development: 'bg-blue-50/80 text-blue-700 border-blue-300/60',
+        dev: 'bg-blue-50/80 text-blue-700 border-blue-300/60',
+        pending: 'bg-amber-50/80 text-amber-700 border-amber-300/60',
+        waiting: 'bg-amber-50/80 text-amber-700 border-amber-300/60',
+        maintenance: 'bg-purple-50/80 text-purple-700 border-purple-300/60',
+        suspended: 'bg-red-50/80 text-red-700 border-red-300/60',
+        error: 'bg-red-50/80 text-red-700 border-red-300/60',
+        stopped: 'bg-slate-100/80 text-slate-500 border-slate-300/50',
+        offline: 'bg-slate-100/80 text-slate-500 border-slate-300/50'
+      };
+      return colors[s] || 'bg-slate-100/80 text-slate-600 border-slate-300/50';
+    }
+
+    function getStatusDotColor(status) {
+      if (!status) return '#94a3b8';
+      const s = status.toLowerCase();
+      const colors = {
+        active: '#10b981', running: '#10b981', configured: '#10b981', online: '#10b981', live: '#10b981',
+        development: '#3b82f6', dev: '#3b82f6',
+        pending: '#f59e0b', waiting: '#f59e0b',
+        maintenance: '#a855f7',
+        suspended: '#ef4444', error: '#ef4444',
+        stopped: '#94a3b8', offline: '#94a3b8'
+      };
+      return colors[s] || '#94a3b8';
     }
 
     // ============================================
@@ -377,116 +472,53 @@
       state.route = path;
       state.routeParams = params;
       state.mobileSidebarOpen = false;
-      state.notificationsOpen = false;
       if (state.currentView === 'dashboard') render();
     });
 
     // ============================================
-    // UTILITY FUNCTIONS
+    // API LAYER
     // ============================================
-    function getStatusColor(status) {
-      if (!status) return 'bg-slate-100 text-slate-600 border-slate-200';
-      const s = status.toLowerCase();
-      const colors = {
-        active: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-        running: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-        configured: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-        online: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-        live: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-        development: 'bg-blue-50 text-blue-700 border-blue-200',
-        dev: 'bg-blue-50 text-blue-700 border-blue-200',
-        pending: 'bg-amber-50 text-amber-700 border-amber-200',
-        waiting: 'bg-amber-50 text-amber-700 border-amber-200',
-        maintenance: 'bg-purple-50 text-purple-700 border-purple-200',
-        suspended: 'bg-red-50 text-red-700 border-red-200',
-        error: 'bg-red-50 text-red-700 border-red-200',
-        stopped: 'bg-slate-100 text-slate-600 border-slate-200',
-        offline: 'bg-slate-100 text-slate-600 border-slate-200',
-        expired: 'bg-red-50 text-red-700 border-red-200',
-        not_configured: 'bg-slate-100 text-slate-500 border-slate-200',
-        inactive: 'bg-slate-100 text-slate-500 border-slate-200',
-        paused: 'bg-amber-50 text-amber-700 border-amber-200'
-      };
-      return colors[s] || 'bg-slate-100 text-slate-600 border-slate-200';
-    }
+    async function fetchAllData() {
+      state.loading = true;
+      state.error = null;
+      render();
 
-    function getStatusDot(status) {
-      if (!status) return '#94a3b8';
-      const s = status.toLowerCase();
-      const colors = {
-        active: '#10b981', running: '#10b981', configured: '#10b981', online: '#10b981', live: '#10b981',
-        development: '#3b82f6', dev: '#3b82f6',
-        pending: '#f59e0b', waiting: '#f59e0b', paused: '#f59e0b',
-        maintenance: '#a855f7',
-        suspended: '#ef4444', error: '#ef4444', expired: '#ef4444',
-        stopped: '#94a3b8', offline: '#94a3b8', not_configured: '#94a3b8', inactive: '#94a3b8'
-      };
-      return colors[s] || '#94a3b8';
-    }
+      try {
+        const [clientsRes, projectsRes, databasesRes, domainsRes, settingsRes] = await Promise.allSettled([
+          fetch(`${API_BASE}/clients`),
+          fetch(`${API_BASE}/projects`),
+          fetch(`${API_BASE}/databases`),
+          fetch(`${API_BASE}/domains`),
+          fetch(`${API_BASE}/settings`)
+        ]);
 
-    function formatDate(dateStr) {
-      if (!dateStr) return '-';
-      try { return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); }
-      catch { return dateStr; }
-    }
+        const clients = clientsRes.status === 'fulfilled' && clientsRes.value.ok ? await clientsRes.value.json() : [];
+        const projects = projectsRes.status === 'fulfilled' && projectsRes.value.ok ? await projectsRes.value.json() : [];
+        const databases = databasesRes.status === 'fulfilled' && databasesRes.value.ok ? await databasesRes.value.json() : [];
+        const domains = domainsRes.status === 'fulfilled' && domainsRes.value.ok ? await domainsRes.value.json() : [];
+        const settings = settingsRes.status === 'fulfilled' && settingsRes.value.ok ? await settingsRes.value.json() : {};
 
-    function getInitials(name) {
-      if (!name) return '?';
-      return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-    }
+        state.data = {
+          clients: Array.isArray(clients) ? clients : [],
+          projects: Array.isArray(projects) ? projects : [],
+          databases: Array.isArray(databases) ? databases : [],
+          domains: Array.isArray(domains) ? domains : [],
+          settings: settings || {}
+        };
 
-    function detectRoleByEmail(email) {
-      const adminEmails = ['sarah@cloudstack.io', 'admin@cloudstack.io'];
-      return adminEmails.includes(email.toLowerCase()) ? 'super_admin' : 'client_user';
-    }
-
-    function getTypeIcon(type) {
-      const t = (type || '').toLowerCase();
-      const icons = {
-        client: '<svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>',
-        project: '<svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>',
-        database: '<svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/></svg>',
-        domain: '<svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9-9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>'
-      };
-      return icons[t] || icons.project;
-    }
-
-    function getNavIcon(icon) {
-      const icons = {
-        dashboard: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>',
-        users: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>',
-        folder: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>',
-        database: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/></svg>',
-        globe: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9-9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>',
-        settings: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>',
-      };
-      return icons[icon] || '';
-    }
-
-    function capitalize(str) {
-      if (!str) return '';
-      return str.charAt(0).toUpperCase() + str.slice(1).replace(/_/g, ' ');
-    }
-
-    function safeNum(val, fallback = 0) {
-      const n = parseInt(val);
-      return isNaN(n) ? fallback : n;
-    }
-
-    function safeFloat(val, fallback = 0) {
-      const n = parseFloat(val);
-      return isNaN(n) ? fallback : n;
-    }
-
-    function getFieldValue(item, field, fallback = '-') {
-      if (!item) return fallback;
-      const val = item[field];
-      if (val === undefined || val === null || val === '') return fallback;
-      return val;
+        state.loading = false;
+        render();
+        showToast('Data synchronized successfully', 'success');
+      } catch (err) {
+        state.loading = false;
+        state.error = err.message;
+        render();
+        showToast('Failed to sync data: ' + err.message, 'error');
+      }
     }
 
     // ============================================
-    // TOAST NOTIFICATIONS
+    // TOAST SYSTEM
     // ============================================
     function showToast(message, type = 'info') {
       const id = Date.now();
@@ -503,63 +535,78 @@
       if (!container) {
         container = document.createElement('div');
         container.id = 'toast-container';
-        container.className = 'fixed bottom-6 right-6 z-[100] flex flex-col gap-2';
+        container.className = 'fixed bottom-6 right-6 z-[100] flex flex-col gap-3 max-w-sm';
         document.body.appendChild(container);
       }
-      const colors = {
-        success: 'bg-emerald-50 border-emerald-200 text-emerald-800',
-        error: 'bg-red-50 border-red-200 text-red-800',
-        warning: 'bg-amber-50 border-amber-200 text-amber-800',
-        info: 'bg-blue-50 border-blue-200 text-blue-800'
+
+      const styles = {
+        success: 'bg-white/95 border-emerald-200 text-emerald-900 shadow-lg shadow-emerald-900/10',
+        error: 'bg-white/95 border-red-200 text-red-900 shadow-lg shadow-red-900/10',
+        warning: 'bg-white/95 border-amber-200 text-amber-900 shadow-lg shadow-amber-900/10',
+        info: 'bg-white/95 border-blue-200 text-blue-900 shadow-lg shadow-blue-900/10'
       };
-      const icons = {
-        success: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>',
-        error: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>',
-        warning: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>',
-        info: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>'
+
+      const iconColors = {
+        success: 'text-emerald-600',
+        error: 'text-red-600',
+        warning: 'text-amber-600',
+        info: 'text-blue-600'
       };
+
       container.innerHTML = state.toasts.map(t => `
-        <div class="toast-enter flex items-center gap-3 px-4 py-3 rounded-xl border shadow-lg text-sm font-medium ${colors[t.type] || colors.info}" style="min-width: 280px;">
-          ${icons[t.type] || icons.info}
-          <span class="flex-1">${t.message}</span>
-          <button onclick="this.closest('.toast-enter').remove()" class="opacity-60 hover:opacity-100 transition-opacity">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        <div class="toast-enter flex items-center gap-3 px-5 py-4 rounded-2xl border ${styles[t.type]} backdrop-blur-xl">
+          <span class="${iconColors[t.type]}">${Icons[t.type === 'warning' ? 'alertCircle' : t.type === 'success' ? 'check' : t.type === 'error' ? 'close' : 'info']}</span>
+          <span class="flex-1 text-sm font-medium">${t.message}</span>
+          <button onclick="this.parentElement.remove()" class="opacity-40 hover:opacity-70 transition-opacity p-1">
+            ${Icons.close}
           </button>
         </div>
       `).join('');
     }
 
     // ============================================
-    // SKELETON LOADING COMPONENTS
+    // COMPONENTS
     // ============================================
-    function renderSkeletonCards(count = 4) {
-      return Array.from({ length: count }, () => `
-        <div class="card p-6">
-          <div class="flex items-start justify-between">
-            <div class="flex-1">
-              <div class="skeleton-text w-20 h-3 mb-4"></div>
-              <div class="skeleton-text w-12 h-8 mb-3"></div>
-              <div class="skeleton-text w-16 h-3"></div>
-            </div>
-            <div class="skeleton w-10 h-10"></div>
-          </div>
-        </div>
-      `).join('');
+    function renderStatusBadge(status) {
+      const color = getStatusDotColor(status);
+      return `
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${getStatusColor(status)}">
+          <span class="w-1.5 h-1.5 rounded-full status-dot" style="background:${color};box-shadow:0 0 6px ${color}40"></span>
+          ${capitalize(status)}
+        </span>
+      `;
     }
 
-    function renderSkeletonTable(rows = 5, cols = 6) {
+    function renderIconBox(icon, size = 'md') {
+      const sizes = { sm: 'w-8 h-8', md: 'w-10 h-10', lg: 'w-12 h-12', xl: 'w-14 h-14' };
+      return `<div class="icon-box ${sizes[size] || size} rounded-xl">${icon}</div>`;
+    }
+
+    function renderBreadcrumbs(items) {
       return `
-        <div class="card overflow-hidden">
-          <div class="px-6 py-4 border-b border-slate-100">
-            <div class="skeleton-text w-32 h-5"></div>
+        <nav class="flex items-center gap-2 text-sm mb-6 animate-fade-in">
+          ${items.map((item, i) => `
+            ${i > 0 ? `<span class="text-slate-300">${Icons.chevronRight}</span>` : ''}
+            ${item.path ? `<a href="#${item.path}" class="text-slate-500 hover:text-slate-800 transition-colors">${item.label}</a>` : `<span class="text-slate-900 font-semibold">${item.label}</span>`}
+          `).join('')}
+        </nav>
+      `;
+    }
+
+    // ============================================
+    // SKELETON LOADERS
+    // ============================================
+    function renderSkeletonTable(rows = 5, cols = 5) {
+      return `
+        <div class="glass-card overflow-hidden animate-fade-in">
+          <div class="p-6 border-b border-white/40">
+            <div class="skeleton-text w-48 h-5"></div>
           </div>
-          <div class="divide-y divide-slate-100">
+          <div class="divide-y divide-slate-100/50">
             ${Array.from({ length: rows }, () => `
               <div class="px-6 py-4 flex items-center gap-4">
                 ${Array.from({ length: cols }, () => `
-                  <div class="flex-1">
-                    <div class="skeleton-text w-full h-4"></div>
-                  </div>
+                  <div class="flex-1 skeleton-text h-4 rounded-md"></div>
                 `).join('')}
               </div>
             `).join('')}
@@ -568,23 +615,14 @@
       `;
     }
 
-    function renderSkeletonProjectCards(count = 6) {
+    function renderSkeletonCards(count = 4) {
       return Array.from({ length: count }, () => `
-        <div class="card p-5">
+        <div class="glass-card p-6 animate-fade-in-up">
           <div class="flex items-start justify-between mb-4">
-            <div class="skeleton w-10 h-10"></div>
-            <div class="skeleton-text w-20 h-5"></div>
+            <div><div class="skeleton-text w-24 h-4 mb-3"></div><div class="skeleton-text w-16 h-8"></div></div>
+            <div class="skeleton w-11 h-11 rounded-xl"></div>
           </div>
-          <div class="skeleton-text w-3/4 h-4 mb-2"></div>
-          <div class="skeleton-text w-1/2 h-4 mb-4"></div>
-          <div class="flex gap-2 mb-4">
-            <div class="skeleton-text w-16 h-5"></div>
-            <div class="skeleton-text w-12 h-5"></div>
-          </div>
-          <div class="border-t border-slate-100 pt-3 flex justify-between">
-            <div class="skeleton-text w-16 h-3"></div>
-            <div class="skeleton-text w-20 h-3"></div>
-          </div>
+          <div class="skeleton-text w-20 h-3 mt-4"></div>
         </div>
       `).join('');
     }
@@ -592,12 +630,9 @@
     function renderLoadingState() {
       return `
         <div class="space-y-6 animate-fade-in">
-          <div class="flex items-center justify-between">
-            <div>
-              <div class="skeleton-text w-40 h-7 mb-2"></div>
-              <div class="skeleton-text w-64 h-4"></div>
-            </div>
-            <div class="skeleton w-28 h-10"></div>
+          <div class="flex justify-between items-center">
+            <div><div class="skeleton-text w-44 h-7 mb-2"></div><div class="skeleton-text w-72 h-4"></div></div>
+            <div class="skeleton w-32 h-10 rounded-xl"></div>
           </div>
           ${renderSkeletonTable()}
         </div>
@@ -607,19 +642,17 @@
     function renderErrorState() {
       return `
         <div class="flex flex-col items-center justify-center py-20 animate-fade-in">
-          <div class="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center mb-5">
-            <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-            </svg>
+          <div class="w-20 h-20 bg-red-50/80 rounded-3xl flex items-center justify-center mb-6 border border-red-200/60">
+            <span class="text-red-500 w-10 h-10">${Icons.alertCircle}</span>
           </div>
-          <h3 class="text-lg font-semibold text-slate-900 mb-2">Failed to load data</h3>
-          <p class="text-sm text-slate-500 mb-6 text-center max-w-sm">${state.error || 'An unexpected error occurred.'}</p>
+          <h3 class="text-xl font-bold text-slate-900 mb-2">Connection Error</h3>
+          <p class="text-sm text-slate-500 mb-8 max-w-md text-center">${state.error || 'Unable to connect to the API server.'}</p>
           <div class="flex gap-3">
-            <button onclick="fetchAPI()" class="inline-flex items-center gap-2 px-5 py-2.5 btn-primary font-medium rounded-xl text-sm">
-              <svg class="w-4 h-4 animate-spin hidden" id="retry-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-              Retry
+            <button onclick="fetchAllData()" class="glass-btn-primary px-6 py-3 rounded-xl font-semibold text-sm inline-flex items-center gap-2">
+              <span class="animate-spin">${Icons.refresh}</span>
+              Retry Connection
             </button>
-            <button onclick="logout()" class="px-5 py-2.5 btn-secondary font-medium rounded-xl text-sm">Sign Out</button>
+            <button onclick="logout()" class="glass-btn-secondary px-6 py-3 rounded-xl font-semibold text-sm">Sign Out</button>
           </div>
         </div>
       `;
@@ -627,13 +660,13 @@
 
     function renderEmptyState(title, description, icon) {
       return `
-        <div class="flex flex-col items-center justify-center py-16 animate-fade-in">
-          <div class="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center mb-4 text-slate-400">
-            ${icon || '<svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>'}
+        <div class="flex flex-col items-center justify-center py-16 animate-fade-in glass-card mx-auto max-w-md">
+          <div class="w-16 h-16 bg-slate-100/80 rounded-2xl flex items-center justify-center mb-4 text-slate-400 border border-slate-200/60">
+            ${icon || `<span class="w-8 h-8">${Icons.folder}</span>`}
           </div>
-          <h3 class="text-base font-semibold text-slate-900 mb-1">${title}</h3>
-          <p class="text-sm text-slate-500 mb-5">${description}</p>
-          <button onclick="fetchAPI()" class="px-5 py-2.5 btn-primary font-medium rounded-xl text-sm">Refresh Data</button>
+          <h3 class="text-base font-bold text-slate-900 mb-1">${title}</h3>
+          <p class="text-sm text-slate-500 mb-5 text-center">${description}</p>
+          <button onclick="fetchAllData()" class="glass-btn-primary px-5 py-2.5 rounded-xl font-medium text-sm">Refresh Data</button>
         </div>
       `;
     }
@@ -645,7 +678,7 @@
       const app = document.getElementById('app');
       switch(state.currentView) {
         case 'login': app.innerHTML = renderLoginPage(); initLoginEvents(); break;
-        case 'dashboard': app.innerHTML = renderDashboardLayout(); initDashboardInteractions(); break;
+        case 'dashboard': app.innerHTML = renderDashboardLayout(); initDashboardEvents(); break;
         default: app.innerHTML = renderLoginPage();
       }
     }
@@ -655,66 +688,72 @@
     // ============================================
     function renderLoginPage() {
       return `
-        <div class="min-h-screen flex items-center justify-center p-4 bg-white">
-          <div class="w-full max-w-md animate-scale-in">
+        <div class="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+          <!-- Background Decoration -->
+          <div class="absolute top-0 left-1/4 w-96 h-96 bg-blue-200/30 rounded-full blur-3xl animate-float"></div>
+          <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-200/30 rounded-full blur-3xl animate-float" style="animation-delay:-3s"></div>
+          
+          <div class="w-full max-w-md relative z-10 animate-scale-in">
+            <!-- Logo -->
             <div class="text-center mb-10">
-              <div class="inline-flex items-center justify-center w-14 h-14 bg-slate-900 rounded-2xl mb-5 shadow-lg shadow-slate-900/20">
-                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-                </svg>
+              <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl mb-5 shadow-xl shadow-slate-900/20 border border-white/10">
+                <span class="text-white w-8 h-8">${Icons.logo}</span>
               </div>
-              <h1 class="text-2xl font-bold tracking-tight text-slate-900">CloudStack</h1>
-              <p class="text-sm text-slate-500 mt-2">Infrastructure Management Platform</p>
+              <h1 class="text-3xl font-bold tracking-tight text-slate-900">CloudStack</h1>
+              <p class="text-sm text-slate-500 mt-2 font-medium">Infrastructure Management Platform</p>
             </div>
 
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+            <!-- Login Card -->
+            <div class="glass-card p-8">
               <div class="mb-6">
-                <h2 class="text-lg font-semibold text-slate-900">Welcome back</h2>
-                <p class="text-sm text-slate-500 mt-1">Sign in to your account</p>
+                <h2 class="text-xl font-bold text-slate-900">Welcome back</h2>
+                <p class="text-sm text-slate-500 mt-1">Sign in to your account to continue</p>
               </div>
               
               <form id="loginForm" class="space-y-4">
-                <div class="space-y-1.5">
-                  <label class="block text-sm font-medium text-slate-700">Email address</label>
-                  <input type="email" id="loginEmail" class="w-full px-4 py-2.5 input-field text-sm placeholder:text-slate-400" placeholder="you@example.com" required autocomplete="email">
+                <div class="space-y-2">
+                  <label class="block text-sm font-semibold text-slate-700">Email address</label>
+                  <input type="email" id="loginEmail" class="w-full px-4 py-3 glass-input text-sm placeholder:text-slate-400" placeholder="you@example.com" required autocomplete="email">
                 </div>
-                <div class="space-y-1.5">
+                <div class="space-y-2">
                   <div class="flex items-center justify-between">
-                    <label class="block text-sm font-medium text-slate-700">Password</label>
-                    <a href="#" class="text-xs text-slate-900 hover:text-slate-700 font-medium">Forgot password?</a>
+                    <label class="block text-sm font-semibold text-slate-700">Password</label>
+                    <a href="#" class="text-xs font-semibold text-slate-900 hover:text-slate-600 transition-colors">Forgot password?</a>
                   </div>
-                  <input type="password" id="loginPassword" class="w-full px-4 py-2.5 input-field text-sm placeholder:text-slate-400" placeholder="Enter your password" required autocomplete="current-password">
+                  <input type="password" id="loginPassword" class="w-full px-4 py-3 glass-input text-sm placeholder:text-slate-400" placeholder="Enter your password" required autocomplete="current-password">
                 </div>
-                <button type="submit" id="loginBtn" class="w-full py-2.5 px-4 btn-primary font-medium rounded-xl text-sm flex items-center justify-center gap-2">
+                <button type="submit" id="loginBtn" class="w-full py-3.5 glass-btn-primary font-semibold rounded-xl text-sm flex items-center justify-center gap-2">
                   <span>Sign in</span>
-                  <svg id="login-spinner" class="w-4 h-4 animate-spin hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                  <span id="loginSpinner" class="hidden animate-spin w-4 h-4">${Icons.refresh}</span>
                 </button>
               </form>
 
               <div class="relative my-6">
-                <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-100"></div></div>
-                <div class="relative flex justify-center text-xs"><span class="bg-white px-4 text-slate-400 font-medium">Demo credentials</span></div>
+                <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-200/60"></div></div>
+                <div class="relative flex justify-center text-xs"><span class="bg-white/60 px-4 text-slate-400 font-semibold backdrop-blur-sm rounded-full">Quick Access</span></div>
               </div>
 
-              <div class="space-y-2">
-                <button onclick="quickLogin('sarah@cloudstack.io')" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-50 border border-slate-200 rounded-xl transition-all group">
-                  <div class="w-9 h-9 bg-slate-900 rounded-lg flex items-center justify-center text-white text-xs font-bold">SA</div>
+              <div class="space-y-2.5">
+                <button onclick="quickLogin('sarah@cloudstack.io')" class="w-full flex items-center gap-3.5 px-4 py-3.5 glass-btn-secondary rounded-xl group transition-all hover:bg-white/90">
+                  <div class="w-10 h-10 bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow-md">SA</div>
                   <div class="flex-1 text-left">
-                    <p class="text-sm font-medium text-slate-900">Super Admin</p>
-                    <p class="text-xs text-slate-500">sarah@cloudstack.io</p>
+                    <p class="text-sm font-bold text-slate-900">Super Admin</p>
+                    <p class="text-xs text-slate-500 font-medium">sarah@cloudstack.io</p>
                   </div>
-                  <svg class="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                  <span class="text-slate-300 group-hover:text-slate-600 group-hover:translate-x-1 transition-all w-4 h-4">${Icons.chevronRight}</span>
                 </button>
-                <button onclick="quickLogin('michael@acmecorp.com')" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-50 border border-slate-200 rounded-xl transition-all group">
-                  <div class="w-9 h-9 bg-slate-600 rounded-lg flex items-center justify-center text-white text-xs font-bold">CU</div>
+                <button onclick="quickLogin('michael@acmecorp.com')" class="w-full flex items-center gap-3.5 px-4 py-3.5 glass-btn-secondary rounded-xl group transition-all hover:bg-white/90">
+                  <div class="w-10 h-10 bg-gradient-to-br from-slate-500 to-slate-600 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow-md">CU</div>
                   <div class="flex-1 text-left">
-                    <p class="text-sm font-medium text-slate-900">Client User</p>
-                    <p class="text-xs text-slate-500">michael@acmecorp.com</p>
+                    <p class="text-sm font-bold text-slate-900">Client User</p>
+                    <p class="text-xs text-slate-500 font-medium">michael@acmecorp.com</p>
                   </div>
-                  <svg class="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                  <span class="text-slate-300 group-hover:text-slate-600 group-hover:translate-x-1 transition-all w-4 h-4">${Icons.chevronRight}</span>
                 </button>
               </div>
             </div>
+            
+            <p class="text-center text-xs text-slate-400 mt-6 font-medium">© 2024 CloudStack. All rights reserved.</p>
           </div>
         </div>
       `;
@@ -728,79 +767,94 @@
       const user = getUser();
 
       return `
-        <div class="min-h-screen flex bg-white">
-          ${state.mobileSidebarOpen ? '<div class="fixed inset-0 z-40 lg:hidden drawer-overlay" onclick="toggleMobileSidebar()"></div>' : ''}
+        <div class="min-h-screen flex">
+          <!-- Mobile Overlay -->
+          ${state.mobileSidebarOpen ? '<div class="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm lg:hidden" onclick="toggleMobileSidebar()"></div>' : ''}
           
-          <aside class="${state.mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 transition-transform duration-300 flex flex-col">
-            <div class="flex items-center gap-3 px-6 py-5 border-b border-slate-100">
-              <div class="w-8 h-8 bg-slate-900 rounded-lg flex items-center justify-center">
-                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+          <!-- Sidebar -->
+          <aside class="${state.mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:static inset-y-0 left-0 z-50 w-72 glass-sidebar transition-transform duration-300 flex flex-col">
+            <div class="flex items-center gap-3 px-6 py-5 border-b border-white/40">
+              <div class="w-9 h-9 bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl flex items-center justify-center shadow-md">
+                <span class="text-white w-4.5 h-4.5">${Icons.logo}</span>
               </div>
-              <span class="text-slate-900 font-semibold text-base tracking-tight">CloudStack</span>
+              <span class="text-slate-900 font-bold text-lg tracking-tight">CloudStack</span>
             </div>
-            <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-0.5">${renderSidebarNav(isSuperAdmin)}</nav>
-            <div class="p-4 border-t border-slate-100">
-              <div class="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-slate-50 cursor-pointer transition-colors" onclick="navigate('/settings/profile')">
-                <div class="w-8 h-8 bg-slate-900 rounded-lg flex items-center justify-center text-white text-xs font-bold">${getInitials(user.name)}</div>
+            
+            <nav class="flex-1 overflow-y-auto py-6 px-4 space-y-1">
+              ${renderSidebarNav(isSuperAdmin)}
+            </nav>
+            
+            <div class="p-4 border-t border-white/40">
+              <div class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/60 cursor-pointer transition-all group" onclick="navigate('/settings/profile')">
+                <div class="w-10 h-10 bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow-sm">${getInitials(user.name)}</div>
                 <div class="flex-1 min-w-0">
-                  <p class="text-sm font-medium text-slate-900 truncate">${user.name}</p>
-                  <p class="text-xs text-slate-500 truncate">${isSuperAdmin ? 'Administrator' : user.company}</p>
+                  <p class="text-sm font-bold text-slate-900 truncate">${user.name}</p>
+                  <p class="text-xs text-slate-500 font-medium truncate">${isSuperAdmin ? 'Administrator' : user.company}</p>
                 </div>
+                <span class="text-slate-300 group-hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-all w-4 h-4">${Icons.chevronRight}</span>
               </div>
             </div>
           </aside>
 
+          <!-- Main Content -->
           <div class="flex-1 flex flex-col min-h-screen">
-            <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-b border-slate-200">
-              <div class="flex items-center justify-between px-6 lg:px-8 h-14">
+            <!-- Header -->
+            <header class="sticky top-0 z-30 glass-header">
+              <div class="flex items-center justify-between px-6 lg:px-8 h-16">
                 <div class="flex items-center gap-4">
-                  <button onclick="toggleMobileSidebar()" class="lg:hidden p-2 hover:bg-slate-100 rounded-lg transition-colors">
-                    <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                  <button onclick="toggleMobileSidebar()" class="lg:hidden p-2.5 hover:bg-white/60 rounded-xl transition-colors">
+                    <span class="w-5 h-5 text-slate-600">${Icons.menu}</span>
                   </button>
-                  <div class="hidden sm:flex items-center bg-slate-50 rounded-xl px-4 py-2 w-72 border border-slate-200 focus-within:border-slate-300 transition-all">
-                    <svg class="w-4 h-4 text-slate-400 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                    <input type="text" placeholder="Search..." class="bg-transparent border-none outline-none text-sm text-slate-700 placeholder:text-slate-400 w-full">
+                  <div class="hidden sm:flex items-center glass-input px-4 py-2.5 w-80 rounded-xl">
+                    <span class="w-4 h-4 text-slate-400 mr-3">${Icons.search}</span>
+                    <input type="text" placeholder="Search anything..." class="bg-transparent border-none outline-none text-sm text-slate-700 placeholder:text-slate-400 w-full">
                   </div>
                 </div>
-                <div class="flex items-center gap-1">
-                  <button onclick="fetchAPI()" class="p-2 hover:bg-slate-100 rounded-lg transition-colors" title="Refresh data">
-                    <svg class="w-5 h-5 text-slate-600 ${state.loading ? 'animate-spin' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                
+                <div class="flex items-center gap-2">
+                  <button onclick="fetchAllData()" class="p-2.5 hover:bg-white/60 rounded-xl transition-colors relative group" title="Sync Data">
+                    <span class="w-5 h-5 text-slate-600 ${state.loading ? 'animate-spin' : ''} group-hover:text-slate-900 transition-colors">${Icons.refresh}</span>
                   </button>
-                  <button onclick="logout()" class="ml-2 p-2 hover:bg-slate-100 rounded-lg transition-colors" title="Sign out">
-                    <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                  <button onclick="logout()" class="p-2.5 hover:bg-red-50/80 rounded-xl transition-colors group" title="Sign Out">
+                    <span class="w-5 h-5 text-slate-600 group-hover:text-red-600 transition-colors">${Icons.logout}</span>
                   </button>
                 </div>
               </div>
             </header>
+
+            <!-- Page Content -->
             <main class="flex-1 p-6 lg:p-8 overflow-auto">
-              ${state.error && !state.data ? renderErrorState() : renderCurrentPage()}
+              ${state.error && !state.data.clients.length ? renderErrorState() : renderCurrentPage()}
             </main>
           </div>
+          
+          ${renderModals()}
         </div>
-        ${renderModals()}
       `;
     }
 
     function renderSidebarNav(isSuperAdmin) {
       const items = isSuperAdmin
         ? [
-            { id: '/', icon: 'dashboard', label: 'Overview' },
-            { id: '/clients', icon: 'users', label: 'Clients' },
-            { id: '/projects', icon: 'folder', label: 'Projects' },
-            { id: '/databases', icon: 'database', label: 'Databases' },
-            { id: '/domains', icon: 'globe', label: 'Domains' },
-            { id: '/settings/profile', icon: 'settings', label: 'Settings' }
+            { id: '/', icon: Icons.dashboard, label: 'Overview' },
+            { id: '/clients', icon: Icons.users, label: 'Clients' },
+            { id: '/projects', icon: Icons.folder, label: 'Projects' },
+            { id: '/databases', icon: Icons.database, label: 'Databases' },
+            { id: '/domains', icon: Icons.globe, label: 'Domains' },
+            { id: '/settings/profile', icon: Icons.settings, label: 'Settings' }
           ]
         : [
-            { id: '/', icon: 'dashboard', label: 'Overview' },
-            { id: '/projects', icon: 'folder', label: 'My Projects' },
-            { id: '/domains', icon: 'globe', label: 'Domains' },
-            { id: '/databases', icon: 'database', label: 'Databases' },
-            { id: '/settings/profile', icon: 'settings', label: 'Settings' }
+            { id: '/', icon: Icons.dashboard, label: 'Overview' },
+            { id: '/projects', icon: Icons.folder, label: 'My Projects' },
+            { id: '/domains', icon: Icons.globe, label: 'Domains' },
+            { id: '/databases', icon: Icons.database, label: 'Databases' },
+            { id: '/settings/profile', icon: Icons.settings, label: 'Settings' }
           ];
+
       return items.map(item => `
-        <button onclick="navigate('${item.id}')" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 text-sm ${state.route === item.id ? 'active' : ''}">
-          ${getNavIcon(item.icon)}<span>${item.label}</span>
+        <button onclick="navigate('${item.id}')" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 text-sm font-medium ${state.route === item.id ? 'active' : ''}">
+          <span class="w-5 h-5">${item.icon}</span>
+          <span>${item.label}</span>
         </button>
       `).join('');
     }
@@ -809,48 +863,21 @@
     // PAGE ROUTER
     // ============================================
     function renderCurrentPage() {
-      if (state.loading && !state.data) return renderLoadingState();
-      const route = state.route;
+      if (state.loading && !state.data.clients.length) return renderLoadingState();
       const params = state.routeParams;
       const isSuperAdmin = state.currentRole === 'super_admin';
 
-      if (route === '/') return isSuperAdmin ? renderAdminDashboard() : renderClientDashboard();
-      if (route === '/clients') return renderClientsPage();
-      if (route === '/projects') return renderProjectsPage();
-      if (route === '/databases') return renderDatabasesPage();
-      if (route === '/domains') return renderDomainsPage();
-      if (params[0] === 'clients' && params[1]) return renderClientDetailPage(params[1]);
-      if (params[0] === 'projects' && params[1]) return renderProjectDetailPage(params[1]);
-      if (params[0] === 'databases' && params[1]) return renderDatabaseDetailPage(params[1]);
-      if (params[0] === 'domains' && params[1] === 'manage' && params[2]) return renderManageDNSPage(params[2]);
+      if (state.route === '/') return isSuperAdmin ? renderAdminDashboard() : renderClientDashboard();
+      if (state.route === '/clients') return renderClientsPage();
+      if (state.route === '/projects') return renderProjectsPage();
+      if (state.route === '/databases') return renderDatabasesPage();
+      if (state.route === '/domains') return renderDomainsPage();
+      if (params[0] === 'clients' && params[1]) return renderClientDetail(params[1]);
+      if (params[0] === 'projects' && params[1]) return renderProjectDetail(params[1]);
+      if (params[0] === 'databases' && params[1]) return renderDatabaseDetail(params[1]);
+      if (params[0] === 'domains' && params[1] === 'manage' && params[2]) return renderDNSManage(params[2]);
       if (params[0] === 'settings') return renderSettingsPage(params[1] || 'profile');
       return renderAdminDashboard();
-    }
-
-    // ============================================
-    // BREADCRUMBS
-    // ============================================
-    function renderBreadcrumbs(items) {
-      return `
-        <nav class="flex items-center gap-2 text-sm mb-6 animate-fade-in">
-          ${items.map((item, i) => `
-            ${i > 0 ? '<svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>' : ''}
-            ${item.path ? `<a href="#${item.path}" class="breadcrumb-link">${item.label}</a>` : `<span class="text-slate-900 font-medium">${item.label}</span>`}
-          `).join('')}
-        </nav>
-      `;
-    }
-
-    // ============================================
-    // STATUS BADGE
-    // ============================================
-    function renderStatusBadge(status) {
-      return `
-        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-semibold border ${getStatusColor(status)}">
-          <span class="w-1.5 h-1.5 rounded-full ${status && status.toLowerCase() === 'running' ? 'status-pulse' : ''}" style="background: ${getStatusDot(status)}"></span>
-          ${capitalize(status)}
-        </span>
-      `;
     }
 
     // ============================================
@@ -861,130 +888,109 @@
       const projects = getData('projects');
       const databases = getData('databases');
       const domains = getData('domains');
-      const activities = getData('activities');
-
-      if (state.loading) return renderLoadingState();
-
-      const activeProjects = projects.filter(p => (p.status || '').toLowerCase() === 'active');
-      const activeDbs = databases.filter(d => (d.status || '').toLowerCase() === 'running');
 
       const kpis = [
-        { label: 'Total Clients', value: clients.length, change: '+12%', icon: 'users' },
-        { label: 'Active Projects', value: activeProjects.length, change: '+8%', icon: 'folder' },
-        { label: 'Domains', value: domains.length, change: '+24%', icon: 'globe' },
-        { label: 'Databases', value: databases.length, change: '+5%', icon: 'database' }
+        { label: 'Total Clients', value: clients.length, change: '+12%', icon: Icons.users, color: 'from-blue-500 to-blue-600' },
+        { label: 'Active Projects', value: projects.filter(p => p.status === 'active').length, change: '+8%', icon: Icons.folder, color: 'from-purple-500 to-purple-600' },
+        { label: 'Domains', value: domains.length, change: '+24%', icon: Icons.globe, color: 'from-amber-500 to-orange-500' },
+        { label: 'Databases', value: databases.length, change: '+5%', icon: Icons.database, color: 'from-emerald-500 to-teal-500' }
       ];
 
       return `
         <div class="space-y-8 animate-fade-in-up">
-          <div class="flex items-center justify-between">
+          <!-- Header -->
+          <div class="flex items-end justify-between">
             <div>
-              <h1 class="text-2xl font-bold tracking-tight text-slate-900">Dashboard</h1>
-              <p class="text-sm text-slate-500 mt-1">Welcome back, ${getUser().name.split(' ')[0]}! Here's what's happening.</p>
+              <h1 class="text-3xl font-bold tracking-tight text-slate-900">Dashboard</h1>
+              <p class="text-slate-500 mt-1 font-medium">Welcome back, ${getUser().name.split(' ')[0]}! Here's the overview.</p>
             </div>
-            <span class="text-xs text-slate-400 font-medium">Last synced: just now</span>
+            <div class="flex items-center gap-2 text-xs text-slate-400 font-medium bg-white/50 px-3 py-1.5 rounded-full border border-white/60">
+              <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+              Live • Just now
+            </div>
           </div>
 
+          <!-- KPI Cards -->
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             ${kpis.map((kpi, i) => `
-              <div class="card p-6 card-hover animate-fade-in-up stagger-${i + 1}">
+              <div class="glass-card p-6 animate-fade-in-up stagger-${i+1} group cursor-default">
                 <div class="flex items-start justify-between">
-                  <div>
-                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">${kpi.label}</p>
-                    <p class="text-3xl font-bold text-slate-900 tracking-tight mt-2">${kpi.value}</p>
-                    <span class="inline-flex items-center gap-0.5 text-xs font-semibold text-emerald-600 mt-2">
-                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
+                  <div class="flex-1">
+                    <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">${kpi.label}</p>
+                    <p class="text-4xl font-black text-slate-900 tracking-tight">${kpi.value}</p>
+                    <div class="flex items-center gap-1 mt-2 text-xs font-bold text-emerald-600">
+                      <span class="w-3 h-3">${Icons.trendingUp}</span>
                       ${kpi.change}
-                    </span>
+                    </div>
                   </div>
-                  <div class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-600">${getNavIcon(kpi.icon)}</div>
+                  <div class="w-12 h-12 bg-gradient-to-br ${kpi.color} rounded-2xl flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <span class="w-6 h-6">${kpi.icon}</span>
+                  </div>
                 </div>
               </div>
             `).join('')}
           </div>
 
+          <!-- Main Grid -->
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="lg:col-span-2 card p-6 animate-fade-in-up stagger-4">
-              <div class="flex items-center justify-between mb-6">
-                <h2 class="text-base font-semibold text-slate-900">Clients Overview</h2>
-                <a href="#/clients" class="text-xs text-slate-900 hover:text-slate-600 font-semibold">View all →</a>
+            <!-- Clients Table -->
+            <div class="lg:col-span-2 glass-card overflow-hidden animate-fade-in-up stagger-4">
+              <div class="px-6 py-5 border-b border-white/40 flex items-center justify-between">
+                <h2 class="font-bold text-slate-900 text-lg">Recent Clients</h2>
+                <a href="#/clients" class="text-xs font-bold text-slate-900 hover:text-slate-600 transition-colors flex items-center gap-1 group">
+                  View All <span class="group-hover:translate-x-1 transition-transform w-3 h-3">${Icons.chevronRight}</span>
+                </a>
               </div>
-              ${clients.length > 0 ? `
-                <div class="space-y-3">
-                  ${clients.slice(0, 5).map(client => `
-                    <div class="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-slate-50 transition-colors cursor-pointer" onclick="navigate('/clients/${client.id}')">
-                      <div class="flex items-center gap-3">
-                        <div class="w-9 h-9 bg-slate-100 rounded-lg flex items-center justify-center text-slate-600 text-xs font-semibold">${getInitials(getFieldValue(client, 'name'))}</div>
-                        <div>
-                          <p class="font-medium text-slate-900 text-sm">${getFieldValue(client, 'name')}</p>
-                          <p class="text-xs text-slate-500">${getFieldValue(client, 'email')}</p>
-                        </div>
+              
+              <div class="divide-y divide-slate-100/60">
+                ${clients.slice(0, 5).map(client => `
+                  <div class="px-6 py-4 flex items-center justify-between table-row-glass cursor-pointer group" onclick="navigate('/clients/${client.id}')">
+                    <div class="flex items-center gap-4">
+                      <div class="w-10 h-10 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center text-slate-600 text-xs font-bold border border-white/60 group-hover:scale-105 transition-transform">
+                        ${getInitials(getFieldValue(client, 'name'))}
                       </div>
-                      ${renderStatusBadge(getFieldValue(client, 'status', 'active'))}
+                      <div>
+                        <p class="font-bold text-slate-900 text-sm group-hover:text-slate-700 transition-colors">${getFieldValue(client, 'name')}</p>
+                        <p class="text-xs text-slate-500 font-medium mt-0.5">${getFieldValue(client, 'email')}</p>
+                      </div>
                     </div>
-                  `).join('')}
-                </div>
-              ` : renderEmptyState('No clients yet', 'Clients will appear here once added from the API.')}
+                    ${renderStatusBadge(getFieldValue(client, 'status', 'active'))}
+                  </div>
+                `).join('')}
+                ${clients.length === 0 ? '<div class="p-8 text-center text-sm text-slate-400">No clients yet</div>' : ''}
+              </div>
             </div>
 
-            <div class="card p-6 animate-fade-in-up stagger-5">
-              <h2 class="text-base font-semibold text-slate-900 mb-5">System Health</h2>
-              <div class="space-y-4">
+            <!-- System Health -->
+            <div class="glass-card p-6 animate-fade-in-up stagger-5">
+              <h2 class="font-bold text-slate-900 text-lg mb-5">System Health</h2>
+              <div class="space-y-5">
                 ${[
-                  { label: 'CPU Usage', value: 42 },
-                  { label: 'Memory', value: 68 },
-                  { label: 'Storage', value: 54 },
-                  { label: 'Network I/O', value: 31 }
+                  { label: 'CPU Usage', value: 42, color: 'from-blue-500 to-cyan-500' },
+                  { label: 'Memory', value: 68, color: 'from-purple-500 to-pink-500' },
+                  { label: 'Storage', value: 54, color: 'from-amber-500 to-orange-500' },
+                  { label: 'Network I/O', value: 31, color: 'from-emerald-500 to-green-500' }
                 ].map(stat => `
                   <div>
-                    <div class="flex items-center justify-between mb-1.5">
-                      <span class="text-xs font-medium text-slate-600">${stat.label}</span>
-                      <span class="text-xs font-bold text-slate-900">${stat.value}%</span>
+                    <div class="flex items-center justify-between mb-2">
+                      <span class="text-xs font-bold text-slate-600 uppercase tracking-wide">${stat.label}</span>
+                      <span class="text-sm font-black text-slate-900">${stat.value}%</span>
                     </div>
-                    <div class="h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                      <div class="progress-bar h-full bg-slate-900 rounded-full" style="width: ${stat.value}%;"></div>
+                    <div class="h-2 bg-slate-100/80 rounded-full overflow-hidden backdrop-blur-sm border border-white/40">
+                      <div class="progress-bar h-full rounded-full bg-gradient-to-r ${stat.color}" style="width: ${stat.value}%"></div>
                     </div>
                   </div>
                 `).join('')}
               </div>
-              <div class="mt-5 pt-4 border-t border-slate-100">
-                <div class="flex items-center gap-2 bg-emerald-50 rounded-lg px-3 py-2.5">
-                  <div class="w-2 h-2 bg-emerald-500 rounded-full status-pulse"></div>
-                  <span class="text-xs font-medium text-emerald-800">All systems operational</span>
+              
+              <div class="mt-6 pt-5 border-t border-white/40">
+                <div class="flex items-center gap-3 bg-emerald-50/80 rounded-xl px-4 py-3 border border-emerald-200/60">
+                  <div class="w-2.5 h-2.5 bg-emerald-500 rounded-full status-dot" style="box-shadow:0 0 8px #10b98180"></div>
+                  <span class="text-xs font-bold text-emerald-800">All systems operational</span>
                 </div>
               </div>
             </div>
           </div>
-
-          ${activities.length > 0 ? `
-            <div class="card overflow-hidden animate-fade-in-up stagger-6">
-              <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-                <h2 class="text-base font-semibold text-slate-900">Recent Activity</h2>
-              </div>
-              <div class="overflow-x-auto">
-                <table class="w-full">
-                  <thead>
-                    <tr class="bg-slate-50/50">
-                      <th class="text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-6 py-3">Action</th>
-                      <th class="text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-6 py-3">Target</th>
-                      <th class="text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-6 py-3">User</th>
-                      <th class="text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-6 py-3">Time</th>
-                    </tr>
-                  </thead>
-                  <tbody class="divide-y divide-slate-100">
-                    ${activities.slice(0, 6).map(a => `
-                      <tr class="table-row">
-                        <td class="px-6 py-3.5"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">${getTypeIcon(getFieldValue(a, 'type', 'client'))}</div><span class="text-sm font-medium text-slate-900">${getFieldValue(a, 'action')}</span></div></td>
-                        <td class="px-6 py-3.5 text-sm text-slate-600">${getFieldValue(a, 'target')}</td>
-                        <td class="px-6 py-3.5 text-sm text-slate-500">${getFieldValue(a, 'user')}</td>
-                        <td class="px-6 py-3.5 text-sm text-slate-400">${getFieldValue(a, 'time')}</td>
-                      </tr>
-                    `).join('')}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          ` : ''}
         </div>
       `;
     }
@@ -998,53 +1004,68 @@
       const domains = getData('domains');
       const databases = getData('databases');
 
-      if (state.loading) return renderLoadingState();
-
-      const clientProjects = projects.length > 0 ? projects : clients.slice(0, 4).map((c, i) => ({
-        id: c.id, name: getFieldValue(c, 'name', 'Project ' + (i + 1)), status: getFieldValue(c, 'status', 'active'),
-        tech: ['React', 'Node.js'], lastDeploy: getFieldValue(c, 'createdAt'), teamSize: 4,
-        description: getFieldValue(c, 'description', 'No description available.')
-      }));
+      const displayItems = projects.length > 0 ? projects : clients;
 
       return `
         <div class="space-y-8 animate-fade-in-up">
           <div>
-            <h1 class="text-2xl font-bold tracking-tight text-slate-900">Welcome back, ${getUser().name.split(' ')[0]}!</h1>
-            <p class="text-sm text-slate-500 mt-1">Here's an overview of your ${getUser().company} resources.</p>
+            <h1 class="text-3xl font-bold tracking-tight text-slate-900">Welcome, ${getUser().name.split(' ')[0]}</h1>
+            <p class="text-slate-500 mt-1 font-medium">Overview of your ${getUser().company} resources</p>
           </div>
+
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
-            <div class="card p-6 card-hover animate-fade-in-up stagger-1">
-              <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Projects</p>
-              <p class="text-3xl font-bold text-slate-900 tracking-tight mt-2">${clientProjects.length}</p>
+            <div class="glass-card p-6 animate-fade-in-up stagger-1">
+              <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center text-white shadow-md">
+                  <span class="w-5 h-5">${Icons.folder}</span>
+                </div>
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Projects</span>
+              </div>
+              <p class="text-3xl font-black text-slate-900">${projects.length}</p>
             </div>
-            <div class="card p-6 card-hover animate-fade-in-up stagger-2">
-              <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Domains</p>
-              <p class="text-3xl font-bold text-slate-900 tracking-tight mt-2">${domains.length}</p>
+            <div class="glass-card p-6 animate-fade-in-up stagger-2">
+              <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center text-white shadow-md">
+                  <span class="w-5 h-5">${Icons.globe}</span>
+                </div>
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Domains</span>
+              </div>
+              <p class="text-3xl font-black text-slate-900">${domains.length}</p>
             </div>
-            <div class="card p-6 card-hover animate-fade-in-up stagger-3">
-              <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Databases</p>
-              <p class="text-3xl font-bold text-slate-900 tracking-tight mt-2">${databases.length}</p>
+            <div class="glass-card p-6 animate-fade-in-up stagger-3">
+              <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center text-white shadow-md">
+                  <span class="w-5 h-5">${Icons.database}</span>
+                </div>
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Databases</span>
+              </div>
+              <p class="text-3xl font-black text-slate-900">${databases.length}</p>
             </div>
           </div>
+
           <div>
             <div class="flex items-center justify-between mb-4">
-              <h2 class="text-base font-semibold text-slate-900">${projects.length > 0 ? 'Your Projects' : 'Clients'}</h2>
-              <a href="#/projects" class="text-xs text-slate-900 hover:text-slate-600 font-semibold">View all →</a>
+              <h2 class="text-lg font-bold text-slate-900">${projects.length > 0 ? 'Your Projects' : 'Resources'}</h2>
+              <a href="#/projects" class="text-xs font-bold text-slate-900 hover:text-slate-600 transition-colors flex items-center gap-1">
+                View All <span class="w-3 h-3">${Icons.chevronRight}</span>
+              </a>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              ${clientProjects.map(item => `
-                <div class="card p-5 card-hover cursor-pointer" onclick="navigate('${projects.length > 0 ? '/projects/' : '/clients/'}${item.id}')">
-                  <div class="flex items-start justify-between mb-3">
-                    <div class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-600">
-                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+              ${displayItems.map(item => `
+                <div class="glass-card p-5 cursor-pointer group" onclick="navigate(${projects.length > 0 ? `'/${item.id}'` : `'/${item.id}'`})">
+                  <div class="flex items-start justify-between mb-4">
+                    <div class="w-11 h-11 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center text-slate-600 border border-white/60 group-hover:scale-110 transition-transform">
+                      <span class="w-5 h-5">${Icons.folder}</span>
                     </div>
                     ${renderStatusBadge(getFieldValue(item, 'status', 'active'))}
                   </div>
-                  <h3 class="font-semibold text-slate-900 mb-1 text-sm">${getFieldValue(item, 'name')}</h3>
-                  <p class="text-xs text-slate-500 mb-3">${Array.isArray(item.tech) ? item.tech.join(', ') : getFieldValue(item, 'email')}</p>
-                  <div class="flex items-center justify-between pt-3 border-t border-slate-100 text-xs text-slate-400">
-                    <span>${getFieldValue(item, 'teamSize', getFieldValue(item, 'projects', '-'))} ${item.teamSize ? 'members' : 'projects'}</span>
-                    <span>${formatDate(getFieldValue(item, 'lastDeploy', getFieldValue(item, 'createdAt')))}</span>
+                  <h3 class="font-bold text-slate-900 mb-1 text-sm group-hover:text-slate-700 transition-colors">${getFieldValue(item, 'name')}</h3>
+                  <p class="text-xs text-slate-500 mb-4 font-medium">${getFieldValue(item, 'email') || getFieldValue(item, 'type', 'Web Project')}</p>
+                  
+                  <div class="flex items-center justify-between pt-3 border-t border-white/40 text-xs text-slate-400">
+                    <span class="font-medium">${formatDate(getFieldValue(item, 'createdAt'))}</span>
+                    <span class="group-hover:translate-x-1 transition-transform w-3 h-3 text-slate-300">${Icons.chevronRight}</span>
                   </div>
                 </div>
               `).join('')}
@@ -1059,46 +1080,58 @@
     // ============================================
     function renderClientsPage() {
       const clients = getData('clients');
-      if (state.loading) return renderLoadingState();
 
       return `
         <div class="space-y-6 animate-fade-in-up">
           <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 class="text-2xl font-bold tracking-tight text-slate-900">Clients</h1>
-              <p class="text-sm text-slate-500 mt-1">${clients.length} client${clients.length !== 1 ? 's' : ''} from API.</p>
+              <h1 class="text-3xl font-bold tracking-tight text-slate-900">Clients</h1>
+              <p class="text-slate-500 mt-1 font-medium">${clients.length} total clients</p>
             </div>
-            <button onclick="fetchAPI()" class="inline-flex items-center gap-2 px-4 py-2.5 btn-secondary font-medium rounded-xl text-sm">
-              <svg class="w-4 h-4 ${state.loading ? 'animate-spin' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-              Refresh
-            </button>
+            <div class="flex gap-3">
+              <button onclick="fetchAllData()" class="glass-btn-secondary px-4 py-2.5 rounded-xl font-semibold text-sm inline-flex items-center gap-2">
+                <span class="w-4 h-4 ${state.loading ? 'animate-spin' : ''}">${Icons.refresh}</span>
+                Sync
+              </button>
+            </div>
           </div>
+
           ${clients.length > 0 ? `
-            <div class="card overflow-hidden">
+            <div class="glass-table rounded-2xl overflow-hidden">
               <div class="overflow-x-auto">
                 <table class="w-full">
                   <thead>
-                    <tr class="border-b border-slate-100">
-                      ${['Client', 'Status', 'Created'].map(h => `<th class="text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-6 py-4">${h}</th>`).join('')}
-                      <th class="text-right text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-6 py-4"></th>
+                    <tr class="border-b border-white/40 bg-white/30 backdrop-blur-sm">
+                      <th class="text-left text-[11px] font-bold text-slate-500 uppercase tracking-wider px-6 py-4">Client</th>
+                      <th class="text-left text-[11px] font-bold text-slate-500 uppercase tracking-wider px-6 py-4">Role</th>
+                      <th class="text-left text-[11px] font-bold text-slate-500 uppercase tracking-wider px-6 py-4">Status</th>
+                      <th class="text-left text-[11px] font-bold text-slate-500 uppercase tracking-wider px-6 py-4">Created</th>
+                      <th class="text-right text-[11px] font-bold text-slate-500 uppercase tracking-wider px-6 py-4">Action</th>
                     </tr>
                   </thead>
-                  <tbody class="divide-y divide-slate-100">
+                  <tbody class="divide-y divide-slate-100/50">
                     ${clients.map(client => `
-                      <tr class="table-row">
+                      <tr class="table-row-glass">
                         <td class="px-6 py-4">
                           <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 bg-slate-100 rounded-lg flex items-center justify-center text-slate-600 text-xs font-semibold">${getInitials(getFieldValue(client, 'name'))}</div>
+                            <div class="w-10 h-10 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center text-slate-600 text-xs font-bold border border-white/60">
+                              ${getInitials(getFieldValue(client, 'name'))}
+                            </div>
                             <div>
-                              <p class="font-semibold text-slate-900 text-sm cursor-pointer hover:text-slate-600" onclick="navigate('/clients/${client.id}')">${getFieldValue(client, 'name')}</p>
-                              <p class="text-xs text-slate-500 mt-0.5">${getFieldValue(client, 'email')}</p>
+                              <p class="font-bold text-slate-900 text-sm cursor-pointer hover:text-slate-600 transition-colors" onclick="navigate('/clients/${client.id}')">${getFieldValue(client, 'name')}</p>
+                              <p class="text-xs text-slate-500 font-medium mt-0.5">${getFieldValue(client, 'email')}</p>
                             </div>
                           </div>
                         </td>
+                        <td class="px-6 py-4">
+                          <span class="px-2.5 py-1 bg-slate-100/80 text-slate-700 text-xs font-bold rounded-lg border border-slate-200/60">${capitalize(getFieldValue(client, 'role', 'client'))}</span>
+                        </td>
                         <td class="px-6 py-4">${renderStatusBadge(getFieldValue(client, 'status', 'active'))}</td>
-                        <td class="px-6 py-4 text-sm text-slate-500">${formatDate(getFieldValue(client, 'createdAt'))}</td>
+                        <td class="px-6 py-4 text-sm text-slate-600 font-medium">${formatDate(getFieldValue(client, 'createdAt'))}</td>
                         <td class="px-6 py-4 text-right">
-                          <button onclick="navigate('/clients/${client.id}')" class="text-xs text-slate-900 hover:text-slate-600 font-semibold">View →</button>
+                          <button onclick="navigate('/clients/${client.id}')" class="text-xs font-bold text-slate-900 hover:text-slate-600 transition-colors inline-flex items-center gap-1 group">
+                            View <span class="group-hover:translate-x-0.5 transition-transform w-3 h-3">${Icons.chevronRight}</span>
+                          </button>
                         </td>
                       </tr>
                     `).join('')}
@@ -1106,7 +1139,7 @@
                 </table>
               </div>
             </div>
-          ` : renderEmptyState('No clients found', 'No client data available from the API endpoint.', '<svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>')}
+          ` : renderEmptyState('No clients found', 'No client data available from the API.', `<span class="w-8 h-8">${Icons.users}</span>`)}
         </div>
       `;
     }
@@ -1114,75 +1147,41 @@
     // ============================================
     // CLIENT DETAIL
     // ============================================
-    function renderClientDetailPage(clientId) {
-      const client = findItem('clients', clientId);
-      if (!client) return renderEmptyState('Client not found', 'This client does not exist in the API data.', '');
-      
-      const projects = getData('projects').filter(p => String(p.clientId) === String(clientId));
-      const domains = getData('domains').filter(d => projects.some(p => String(p.id) === String(d.projectId)));
-      const databases = getData('databases').filter(db => projects.some(p => String(p.id) === String(db.projectId)));
+    function renderClientDetail(id) {
+      const client = findItem('clients', id);
+      if (!client) return renderEmptyState('Client not found', 'This client does not exist in our records.');
 
-      // Dynamic fields from API
-      const fields = Object.entries(client).filter(([key]) => !['id', 'name', 'email', 'status', 'createdAt'].includes(key));
+      const fields = Object.entries(client).filter(([k]) => !['id'].includes(k));
 
       return `
         ${renderBreadcrumbs([{ label: 'Clients', path: '/clients' }, { label: getFieldValue(client, 'name') }])}
-        <div class="animate-fade-in-up">
-          <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
-            <div class="flex items-center gap-4">
-              <div class="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-600 text-xl font-bold">${getInitials(getFieldValue(client, 'name'))}</div>
-              <div>
-                <h1 class="text-2xl font-bold tracking-tight text-slate-900">${getFieldValue(client, 'name')}</h1>
-                <p class="text-sm text-slate-500 mt-1">${getFieldValue(client, 'email')}</p>
-                <div class="mt-2">${renderStatusBadge(getFieldValue(client, 'status', 'active'))}</div>
+        
+        <div class="animate-fade-in-up space-y-6">
+          <!-- Header Card -->
+          <div class="glass-card p-8">
+            <div class="flex flex-col md:flex-row md:items-center gap-6">
+              <div class="w-20 h-20 bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl flex items-center justify-center text-slate-600 text-2xl font-black border border-white/60 shadow-inner">
+                ${getInitials(getFieldValue(client, 'name'))}
+              </div>
+              <div class="flex-1">
+                <div class="flex items-center gap-3 mb-2">
+                  <h1 class="text-2xl font-black text-slate-900">${getFieldValue(client, 'name')}</h1>
+                  ${renderStatusBadge(getFieldValue(client, 'status', 'active'))}
+                </div>
+                <p class="text-slate-500 font-medium">${getFieldValue(client, 'email')}</p>
               </div>
             </div>
           </div>
 
-          <div class="grid grid-cols-3 gap-4 mb-8">
-            <div class="card p-5"><p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Projects</p><p class="text-2xl font-bold text-slate-900 mt-1">${projects.length}</p></div>
-            <div class="card p-5"><p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Domains</p><p class="text-2xl font-bold text-slate-900 mt-1">${domains.length}</p></div>
-            <div class="card p-5"><p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Databases</p><p class="text-2xl font-bold text-slate-900 mt-1">${databases.length}</p></div>
+          <!-- Details Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            ${fields.map(([key, value]) => `
+              <div class="glass-card p-5">
+                <p class="text-[11px] font-black text-slate-500 uppercase tracking-wider mb-1.5">${capitalize(key)}</p>
+                <p class="text-sm font-bold text-slate-900">${value || '-'}</p>
+              </div>
+            `).join('')}
           </div>
-
-          ${fields.length > 0 ? `
-            <div class="card p-6 mb-8">
-              <h2 class="text-base font-semibold text-slate-900 mb-4">Client Details</h2>
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                ${fields.map(([key, value]) => `
-                  <div>
-                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">${capitalize(key)}</p>
-                    <p class="text-sm font-medium text-slate-900 mt-1">${value || '-'}</p>
-                  </div>
-                `).join('')}
-              </div>
-            </div>
-          ` : ''}
-
-          ${projects.length > 0 ? `
-            <div class="card overflow-hidden">
-              <div class="px-6 py-4 border-b border-slate-100"><h2 class="text-base font-semibold text-slate-900">Projects</h2></div>
-              <div class="divide-y divide-slate-100">
-                ${projects.map(project => `
-                  <div class="px-6 py-4 flex items-center justify-between table-row cursor-pointer" onclick="navigate('/projects/${project.id}')">
-                    <div class="flex items-center gap-3">
-                      <div class="w-9 h-9 bg-slate-100 rounded-lg flex items-center justify-center text-slate-600">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
-                      </div>
-                      <div>
-                        <p class="font-medium text-slate-900 text-sm">${getFieldValue(project, 'name')}</p>
-                        <p class="text-xs text-slate-500">${Array.isArray(project.tech) ? project.tech.join(', ') : getFieldValue(project, 'type', '-')}</p>
-                      </div>
-                    </div>
-                    <div class="flex items-center gap-3">
-                      ${renderStatusBadge(getFieldValue(project, 'status'))}
-                      <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    </div>
-                  </div>
-                `).join('')}
-              </div>
-            </div>
-          ` : ''}
         </div>
       `;
     }
@@ -1192,42 +1191,45 @@
     // ============================================
     function renderProjectsPage() {
       const projects = getData('projects');
-      if (state.loading) return renderLoadingState();
 
       return `
         <div class="space-y-6 animate-fade-in-up">
           <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 class="text-2xl font-bold tracking-tight text-slate-900">${state.currentRole === 'super_admin' ? 'Projects' : 'My Projects'}</h1>
-              <p class="text-sm text-slate-500 mt-1">${projects.length} project${projects.length !== 1 ? 's' : ''} from API.</p>
+              <h1 class="text-3xl font-bold tracking-tight text-slate-900">${state.currentRole === 'super_admin' ? 'Projects' : 'My Projects'}</h1>
+              <p class="text-slate-500 mt-1 font-medium">${projects.length} total projects</p>
             </div>
-            <button onclick="fetchAPI()" class="inline-flex items-center gap-2 px-4 py-2.5 btn-secondary font-medium rounded-xl text-sm">
-              <svg class="w-4 h-4 ${state.loading ? 'animate-spin' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-              Refresh
+            <button onclick="fetchAllData()" class="glass-btn-secondary px-4 py-2.5 rounded-xl font-semibold text-sm inline-flex items-center gap-2">
+              <span class="w-4 h-4 ${state.loading ? 'animate-spin' : ''}">${Icons.refresh}</span>
+              Sync
             </button>
           </div>
+
           ${projects.length > 0 ? `
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
               ${projects.map(project => `
-                <div class="card p-5 card-hover cursor-pointer" onclick="navigate('/projects/${project.id}')">
-                  <div class="flex items-start justify-between mb-4">
-                    <div class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-600">
-                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+                <div class="glass-card p-6 cursor-pointer group" onclick="navigate('/projects/${project.id}')">
+                  <div class="flex items-start justify-between mb-5">
+                    <div class="w-12 h-12 bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl flex items-center justify-center text-purple-600 border border-white/60 group-hover:scale-110 transition-transform">
+                      <span class="w-6 h-6">${Icons.folder}</span>
                     </div>
                     ${renderStatusBadge(getFieldValue(project, 'status'))}
                   </div>
-                  <h3 class="font-semibold text-slate-900 mb-2 text-sm">${getFieldValue(project, 'name')}</h3>
-                  <div class="flex flex-wrap gap-1.5 mb-4">
-                    ${(Array.isArray(project.tech) ? project.tech : [getFieldValue(project, 'type', 'web')]).map(t => `<span class="px-2 py-0.5 bg-slate-100 text-slate-600 text-[11px] font-medium rounded-md">${t}</span>`).join('')}
+                  
+                  <h3 class="font-bold text-slate-900 mb-2 text-base group-hover:text-slate-700 transition-colors leading-tight">${getFieldValue(project, 'name')}</h3>
+                  
+                  <div class="flex flex-wrap gap-1.5 mb-5">
+                    <span class="px-2.5 py-1 bg-slate-100/80 text-slate-600 text-[11px] font-bold rounded-lg border border-slate-200/60">${getFieldValue(project, 'type', 'Web App')}</span>
                   </div>
-                  <div class="flex items-center justify-between pt-3 border-t border-slate-100 text-xs text-slate-400">
-                    <span>${getFieldValue(project, 'teamSize', '-')}</span>
-                    <span>${formatDate(getFieldValue(project, 'lastDeploy', getFieldValue(project, 'updatedAt', getFieldValue(project, 'createdAt'))))}</span>
+                  
+                  <div class="flex items-center justify-between pt-4 border-t border-white/40 text-xs text-slate-400 font-medium">
+                    <span>ID: #${project.id}</span>
+                    <span class="group-hover:translate-x-1 transition-transform w-3 h-3 text-slate-300">${Icons.chevronRight}</span>
                   </div>
                 </div>
               `).join('')}
             </div>
-          ` : renderEmptyState('No projects found', 'No project data available from the API endpoint.')}
+          ` : renderEmptyState('No projects found', 'No project data available from the API.', `<span class="w-8 h-8">${Icons.folder}</span>`)}
         </div>
       `;
     }
@@ -1235,85 +1237,41 @@
     // ============================================
     // PROJECT DETAIL
     // ============================================
-    function renderProjectDetailPage(projectId) {
-      const project = findItem('projects', projectId);
-      if (!project) return renderEmptyState('Project not found', 'This project does not exist in the API data.', '');
+    function renderProjectDetail(id) {
+      const project = findItem('projects', id);
+      if (!project) return renderEmptyState('Project not found', 'This project does not exist.');
 
-      const client = findItem('clients', getFieldValue(project, 'clientId'));
-      const domains = getData('domains').filter(d => String(d.projectId) === String(projectId));
-      const databases = getData('databases').filter(db => String(db.projectId) === String(projectId));
-      const fields = Object.entries(project).filter(([key]) => !['id', 'name', 'status', 'tech', 'clientId', 'teamSize', 'lastDeploy'].includes(key));
+      const fields = Object.entries(project).filter(([k]) => !['id'].includes(k));
 
       return `
         ${renderBreadcrumbs([{ label: 'Projects', path: '/projects' }, { label: getFieldValue(project, 'name') }])}
-        <div class="animate-fade-in-up">
-          <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
-            <div>
-              <div class="flex items-center gap-3 mb-2">
-                <h1 class="text-2xl font-bold tracking-tight text-slate-900">${getFieldValue(project, 'name')}</h1>
-                ${renderStatusBadge(getFieldValue(project, 'status'))}
+        
+        <div class="animate-fade-in-up space-y-6">
+          <div class="glass-card p-8">
+            <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
+              <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl flex items-center justify-center text-purple-600 border border-white/60">
+                  <span class="w-7 h-7">${Icons.folder}</span>
+                </div>
+                <div>
+                  <div class="flex items-center gap-3 mb-1">
+                    <h1 class="text-2xl font-black text-slate-900">${getFieldValue(project, 'name')}</h1>
+                    ${renderStatusBadge(getFieldValue(project, 'status'))}
+                  </div>
+                  <p class="text-sm text-slate-500 font-medium">Project ID: #${project.id}</p>
+                </div>
               </div>
-              ${fields.length > 0 ? `<p class="text-sm text-slate-500">${getFieldValue(project, 'description') || ''}</p>` : ''}
-              <div class="flex flex-wrap gap-2 mt-3">
-                ${(Array.isArray(project.tech) ? project.tech : []).map(t => `<span class="px-2.5 py-1 bg-slate-100 text-slate-600 text-xs font-medium rounded-lg">${t}</span>`).join('')}
-              </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              ${fields.map(([key, value]) => `
+                <div class="bg-white/40 rounded-xl p-4 border border-white/60">
+                  <p class="text-[11px] font-black text-slate-500 uppercase tracking-wider mb-1">${capitalize(key)}</p>
+                  <p class="text-sm font-bold text-slate-900 break-all">${value !== null && value !== undefined ? value : '-'}</p>
+                </div>
+              `).join('')}
             </div>
           </div>
-
-          <div class="grid grid-cols-4 gap-4 mb-8">
-            <div class="card p-5"><p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Client</p><p class="text-sm font-semibold text-slate-900 mt-1">${client ? getFieldValue(client, 'name') : '-'}</p></div>
-            <div class="card p-5"><p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Team</p><p class="text-2xl font-bold text-slate-900 mt-1">${getFieldValue(project, 'teamSize', '-')}</p></div>
-            <div class="card p-5"><p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Domains</p><p class="text-2xl font-bold text-slate-900 mt-1">${domains.length}</p></div>
-            <div class="card p-5"><p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Databases</p><p class="text-2xl font-bold text-slate-900 mt-1">${databases.length}</p></div>
-          </div>
-
-          ${fields.length > 0 ? `
-            <div class="card p-6 mb-6">
-              <h2 class="text-base font-semibold text-slate-900 mb-4">Project Details</h2>
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                ${fields.map(([key, value]) => `
-                  <div><p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">${capitalize(key)}</p><p class="text-sm font-medium text-slate-900 mt-1">${value || '-'}</p></div>
-                `).join('')}
-              </div>
-            </div>
-          ` : ''}
-
-          ${domains.length > 0 ? `
-            <div class="card overflow-hidden mb-6">
-              <div class="px-6 py-4 border-b border-slate-100"><h2 class="text-base font-semibold text-slate-900">Domains</h2></div>
-              <div class="divide-y divide-slate-100">
-                ${domains.map(d => `
-                  <div class="px-6 py-3.5 flex items-center justify-between table-row">
-                    <div class="flex items-center gap-3">
-                      <div class="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center text-slate-500"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9-9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg></div>
-                      <span class="text-sm font-medium text-slate-900">${getFieldValue(d, 'domain', getFieldValue(d, 'name'))}</span>
-                    </div>
-                    ${renderStatusBadge(getFieldValue(d, 'status'))}
-                  </div>
-                `).join('')}
-              </div>
-            </div>
-          ` : ''}
-
-          ${databases.length > 0 ? `
-            <div class="card overflow-hidden">
-              <div class="px-6 py-4 border-b border-slate-100"><h2 class="text-base font-semibold text-slate-900">Databases</h2></div>
-              <div class="divide-y divide-slate-100">
-                ${databases.map(db => `
-                  <div class="px-6 py-3.5 flex items-center justify-between table-row cursor-pointer" onclick="navigate('/databases/${db.id}')">
-                    <div class="flex items-center gap-3">
-                      <div class="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center text-slate-500"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/></svg></div>
-                      <div><p class="text-sm font-medium text-slate-900">${getFieldValue(db, 'name')}</p><p class="text-xs text-slate-500">${getFieldValue(db, 'type')}</p></div>
-                    </div>
-                    <div class="flex items-center gap-3">
-                      ${renderStatusBadge(getFieldValue(db, 'status'))}
-                      <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    </div>
-                  </div>
-                `).join('')}
-              </div>
-            </div>
-          ` : ''}
         </div>
       `;
     }
@@ -1323,64 +1281,62 @@
     // ============================================
     function renderDatabasesPage() {
       const databases = getData('databases');
-      if (state.loading) return renderLoadingState();
 
       return `
         <div class="space-y-6 animate-fade-in-up">
           <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 class="text-2xl font-bold tracking-tight text-slate-900">Databases</h1>
-              <p class="text-sm text-slate-500 mt-1">${databases.length} database${databases.length !== 1 ? 's' : ''} from API.</p>
+              <h1 class="text-3xl font-bold tracking-tight text-slate-900">Databases</h1>
+              <p class="text-slate-500 mt-1 font-medium">${databases.length} total databases</p>
             </div>
-            <button onclick="fetchAPI()" class="inline-flex items-center gap-2 px-4 py-2.5 btn-secondary font-medium rounded-xl text-sm">
-              <svg class="w-4 h-4 ${state.loading ? 'animate-spin' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-              Refresh
+            <button onclick="fetchAllData()" class="glass-btn-secondary px-4 py-2.5 rounded-xl font-semibold text-sm inline-flex items-center gap-2">
+              <span class="w-4 h-4 ${state.loading ? 'animate-spin' : ''}">${Icons.refresh}</span>
+              Sync
             </button>
           </div>
+
           ${databases.length > 0 ? `
-            <div class="card overflow-hidden">
+            <div class="glass-table rounded-2xl overflow-hidden">
               <div class="overflow-x-auto">
                 <table class="w-full">
                   <thead>
-                    <tr class="border-b border-slate-100">
-                      ${['Database', 'Type', 'Status', 'Connections'].map(h => `<th class="text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-6 py-4">${h}</th>`).join('')}
-                      <th class="text-right text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-6 py-4"></th>
+                    <tr class="border-b border-white/40 bg-white/30 backdrop-blur-sm">
+                      <th class="text-left text-[11px] font-bold text-slate-500 uppercase tracking-wider px-6 py-4">Database</th>
+                      <th class="text-left text-[11px] font-bold text-slate-500 uppercase tracking-wider px-6 py-4">Type</th>
+                      <th class="text-left text-[11px] font-bold text-slate-500 uppercase tracking-wider px-6 py-4">Status</th>
+                      <th class="text-right text-[11px] font-bold text-slate-500 uppercase tracking-wider px-6 py-4">Action</th>
                     </tr>
                   </thead>
-                  <tbody class="divide-y divide-slate-100">
-                    ${databases.map(db => {
-                      const size = getFieldValue(db, 'size', '0 GB');
-                      const maxSize = getFieldValue(db, 'maxStorage', '100 GB');
-                      const sizeNum = safeFloat(size);
-                      const maxNum = safeFloat(maxSize) || 1;
-                      const pct = Math.min((sizeNum / maxNum) * 100, 100);
-                      return `
-                        <tr class="table-row">
-                          <td class="px-6 py-4">
-                            <div class="flex items-center gap-3">
-                              <div class="w-9 h-9 bg-slate-100 rounded-lg flex items-center justify-center text-slate-600"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/></svg></div>
-                              <div>
-                                <span class="font-semibold text-slate-900 text-sm cursor-pointer hover:text-slate-600" onclick="navigate('/databases/${db.id}')">${getFieldValue(db, 'name')}</span>
-                                <div class="flex items-center gap-2 mt-0.5">
-                                  <span class="text-xs text-slate-500">${size}</span>
-                                  <div class="w-16 h-1 bg-slate-100 rounded-full overflow-hidden"><div class="h-full ${pct > 80 ? 'bg-red-500' : 'bg-slate-900'} rounded-full" style="width:${pct}%"></div></div>
-                                  <span class="text-xs text-slate-400">${maxSize}</span>
-                                </div>
-                              </div>
+                  <tbody class="divide-y divide-slate-100/50">
+                    ${databases.map(db => `
+                      <tr class="table-row-glass">
+                        <td class="px-6 py-4">
+                          <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-xl flex items-center justify-center text-emerald-600 border border-white/60">
+                              <span class="w-5 h-5">${Icons.database}</span>
                             </div>
-                          </td>
-                          <td class="px-6 py-4"><span class="px-2.5 py-1 bg-slate-100 text-slate-700 text-xs font-semibold rounded-lg">${getFieldValue(db, 'type')}</span></td>
-                          <td class="px-6 py-4">${renderStatusBadge(getFieldValue(db, 'status'))}</td>
-                          <td class="px-6 py-4 text-sm text-slate-600">${getFieldValue(db, 'connections', '0')} / ${getFieldValue(db, 'maxConnections', '500')}</td>
-                          <td class="px-6 py-4 text-right"><button onclick="navigate('/databases/${db.id}')" class="text-xs text-slate-900 hover:text-slate-600 font-semibold">View →</button></td>
-                        </tr>
-                      `;
-                    }).join('')}
+                            <div>
+                              <p class="font-bold text-slate-900 text-sm cursor-pointer hover:text-slate-600 transition-colors" onclick="navigate('/databases/${db.id}')">${getFieldValue(db, 'name')}</p>
+                              <p class="text-[11px] text-slate-500 font-medium">ID: #${db.id}</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="px-6 py-4">
+                          <span class="px-2.5 py-1 bg-slate-100/80 text-slate-700 text-xs font-bold rounded-lg border border-slate-200/60 uppercase">${getFieldValue(db, 'type', 'mysql')}</span>
+                        </td>
+                        <td class="px-6 py-4">${renderStatusBadge(getFieldValue(db, 'status'))}</td>
+                        <td class="px-6 py-4 text-right">
+                          <button onclick="navigate('/databases/${db.id}')" class="text-xs font-bold text-slate-900 hover:text-slate-600 transition-colors inline-flex items-center gap-1 group">
+                            Manage <span class="group-hover:translate-x-0.5 transition-transform w-3 h-3">${Icons.chevronRight}</span>
+                          </button>
+                        </td>
+                      </tr>
+                    `).join('')}
                   </tbody>
                 </table>
               </div>
             </div>
-          ` : renderEmptyState('No databases found', 'No database data available from the API endpoint.')}
+          ` : renderEmptyState('No databases found', 'No database data available from the API.', `<span class="w-8 h-8">${Icons.database}</span>`)}
         </div>
       `;
     }
@@ -1388,62 +1344,47 @@
     // ============================================
     // DATABASE DETAIL
     // ============================================
-    function renderDatabaseDetailPage(dbId) {
-      const db = findItem('databases', dbId);
-      if (!db) return renderEmptyState('Database not found', 'This database does not exist in the API data.', '');
+    function renderDatabaseDetail(id) {
+      const db = findItem('databases', id);
+      if (!db) return renderEmptyState('Database not found', 'This database does not exist.');
 
-      const size = getFieldValue(db, 'size', '0 GB');
-      const maxSize = getFieldValue(db, 'maxStorage', '100 GB');
-      const sizeNum = safeFloat(size);
-      const maxNum = safeFloat(maxSize) || 1;
-      const sizePct = Math.min((sizeNum / maxNum) * 100, 100);
-      const connPct = Math.min((safeNum(getFieldValue(db, 'connections')) / safeNum(getFieldValue(db, 'maxConnections'), 500)) * 100, 100);
-      const fields = Object.entries(db).filter(([key]) => !['id', 'name', 'type', 'status', 'size', 'maxStorage', 'connections', 'maxConnections', 'projectId'].includes(key));
+      const fields = Object.entries(db).filter(([k]) => !['id'].includes(k));
 
       return `
         ${renderBreadcrumbs([{ label: 'Databases', path: '/databases' }, { label: getFieldValue(db, 'name') }])}
-        <div class="animate-fade-in-up">
-          <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
-            <div class="flex items-center gap-4">
-              <div class="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center text-slate-600"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/></svg></div>
-              <div>
-                <div class="flex items-center gap-3">
-                  <h1 class="text-2xl font-bold tracking-tight text-slate-900">${getFieldValue(db, 'name')}</h1>
-                  ${renderStatusBadge(getFieldValue(db, 'status'))}
+        
+        <div class="animate-fade-in-up space-y-6">
+          <div class="glass-card p-8">
+            <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-8">
+              <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-2xl flex items-center justify-center text-emerald-600 border border-white/60">
+                  <span class="w-7 h-7">${Icons.database}</span>
                 </div>
-                <p class="text-sm text-slate-500 mt-1">${getFieldValue(db, 'type')} ${getFieldValue(db, 'version') ? '• ' + getFieldValue(db, 'version') : ''} ${getFieldValue(db, 'region') ? '• ' + getFieldValue(db, 'region') : ''}</p>
+                <div>
+                  <div class="flex items-center gap-3 mb-1">
+                    <h1 class="text-2xl font-black text-slate-900">${getFieldValue(db, 'name')}</h1>
+                    ${renderStatusBadge(getFieldValue(db, 'status'))}
+                  </div>
+                  <div class="flex items-center gap-2 text-sm text-slate-500 font-medium">
+                    <span class="px-2 py-0.5 bg-slate-100 rounded text-xs font-bold uppercase">${getFieldValue(db, 'type', 'MySQL')}</span>
+                    <span>• ID: #${db.id}</span>
+                  </div>
+                </div>
               </div>
+              <button onclick="fetchAllData()" class="glass-btn-secondary px-4 py-2 rounded-xl text-sm font-semibold inline-flex items-center gap-2">
+                <span class="w-4 h-4">${Icons.refresh}</span> Refresh
+              </button>
             </div>
-            <div class="flex gap-2">
-              <button onclick="fetchAPI()" class="px-4 py-2.5 btn-secondary font-medium rounded-xl text-sm">Refresh</button>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              ${fields.map(([key, value]) => `
+                <div class="bg-white/40 rounded-xl p-4 border border-white/60">
+                  <p class="text-[11px] font-black text-slate-500 uppercase tracking-wider mb-1">${capitalize(key)}</p>
+                  <p class="text-sm font-bold text-slate-900 break-all">${value !== null && value !== undefined ? value : '-'}</p>
+                </div>
+              `).join('')}
             </div>
           </div>
-
-          <div class="grid grid-cols-2 gap-6 mb-8">
-            <div class="card p-6">
-              <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Storage Used</p>
-              <p class="text-3xl font-bold text-slate-900">${size}</p>
-              <p class="text-sm text-slate-400 mt-1">of ${maxSize}</p>
-              <div class="mt-4 h-2 bg-slate-100 rounded-full overflow-hidden"><div class="h-full ${sizePct > 80 ? 'bg-red-500' : 'bg-slate-900'} rounded-full progress-bar" style="width:${sizePct}%"></div></div>
-            </div>
-            <div class="card p-6">
-              <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Active Connections</p>
-              <p class="text-3xl font-bold text-slate-900">${getFieldValue(db, 'connections', '0')}</p>
-              <p class="text-sm text-slate-400 mt-1">of ${getFieldValue(db, 'maxConnections', '500')} max</p>
-              <div class="mt-4 h-2 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-slate-600 rounded-full progress-bar" style="width:${connPct}%"></div></div>
-            </div>
-          </div>
-
-          ${fields.length > 0 ? `
-            <div class="card p-6">
-              <h2 class="text-base font-semibold text-slate-900 mb-4">Database Details</h2>
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                ${fields.map(([key, value]) => `
-                  <div><p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">${capitalize(key)}</p><p class="text-sm font-medium text-slate-900 mt-1">${value || '-'}</p></div>
-                `).join('')}
-              </div>
-            </div>
-          ` : ''}
         </div>
       `;
     }
@@ -1453,40 +1394,59 @@
     // ============================================
     function renderDomainsPage() {
       const domains = getData('domains');
-      if (state.loading) return renderLoadingState();
 
       return `
         <div class="space-y-6 animate-fade-in-up">
           <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 class="text-2xl font-bold tracking-tight text-slate-900">Domains</h1>
-              <p class="text-sm text-slate-500 mt-1">${domains.length} domain${domains.length !== 1 ? 's' : ''} from API.</p>
+              <h1 class="text-3xl font-bold tracking-tight text-slate-900">Domains</h1>
+              <p class="text-slate-500 mt-1 font-medium">${domains.length} total domains</p>
             </div>
-            <button onclick="fetchAPI()" class="inline-flex items-center gap-2 px-4 py-2.5 btn-secondary font-medium rounded-xl text-sm">
-              <svg class="w-4 h-4 ${state.loading ? 'animate-spin' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-              Refresh
+            <button onclick="fetchAllData()" class="glass-btn-secondary px-4 py-2.5 rounded-xl font-semibold text-sm inline-flex items-center gap-2">
+              <span class="w-4 h-4 ${state.loading ? 'animate-spin' : ''}">${Icons.refresh}</span>
+              Sync
             </button>
           </div>
+
           ${domains.length > 0 ? `
-            <div class="card overflow-hidden">
+            <div class="glass-table rounded-2xl overflow-hidden">
               <div class="overflow-x-auto">
                 <table class="w-full">
                   <thead>
-                    <tr class="border-b border-slate-100">
-                      ${['Domain', 'Status', 'SSL', 'DNS', 'Expiry'].map(h => `<th class="text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-6 py-4">${h}</th>`).join('')}
-                      <th class="text-right text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-6 py-4"></th>
+                    <tr class="border-b border-white/40 bg-white/30 backdrop-blur-sm">
+                      <th class="text-left text-[11px] font-bold text-slate-500 uppercase tracking-wider px-6 py-4">Domain</th>
+                      <th class="text-left text-[11px] font-bold text-slate-500 uppercase tracking-wider px-6 py-4">Status</th>
+                      <th class="text-left text-[11px] font-bold text-slate-500 uppercase tracking-wider px-6 py-4">SSL</th>
+                      <th class="text-right text-[11px] font-bold text-slate-500 uppercase tracking-wider px-6 py-4">Action</th>
                     </tr>
                   </thead>
-                  <tbody class="divide-y divide-slate-100">
+                  <tbody class="divide-y divide-slate-100/50">
                     ${domains.map(d => `
-                      <tr class="table-row">
-                        <td class="px-6 py-4 font-semibold text-slate-900 text-sm">${getFieldValue(d, 'domain', getFieldValue(d, 'name'))}</td>
+                      <tr class="table-row-glass">
+                        <td class="px-6 py-4">
+                          <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-gradient-to-br from-amber-100 to-orange-100 rounded-xl flex items-center justify-center text-amber-600 border border-white/60">
+                              <span class="w-5 h-5">${Icons.globe}</span>
+                            </div>
+                            <div>
+                              <p class="font-bold text-slate-900 text-sm font-mono">${getFieldValue(d, 'domain', getFieldValue(d, 'name'))}</p>
+                              <p class="text-[11px] text-slate-500 font-medium">ID: #${d.id}</p>
+                            </div>
+                          </div>
+                        </td>
                         <td class="px-6 py-4">${renderStatusBadge(getFieldValue(d, 'status'))}</td>
-                        <td class="px-6 py-4">${getFieldValue(d, 'ssl') ? '<span class="text-emerald-600 text-sm font-semibold">Active</span>' : '<span class="text-slate-400 text-sm">None</span>'}</td>
-                        <td class="px-6 py-4"><span class="text-sm ${getFieldValue(d, 'dnsStatus') === 'configured' ? 'text-emerald-600' : 'text-amber-600'} font-medium">${capitalize(getFieldValue(d, 'dnsStatus', '-'))}</span></td>
-                        <td class="px-6 py-4 text-sm text-slate-600">${formatDate(getFieldValue(d, 'expiryDate', getFieldValue(d, 'sslExpiry', getFieldValue(d, 'createdAt'))))}</td>
+                        <td class="px-6 py-4">
+                          <span class="inline-flex items-center gap-1.5 text-xs font-bold ${getFieldValue(d, 'ssl') ? 'text-emerald-600' : 'text-slate-400'}">
+                            <span class="w-2 h-2 rounded-full ${getFieldValue(d, 'ssl') ? 'bg-emerald-500' : 'bg-slate-300'}"></span>
+                            ${getFieldValue(d, 'ssl') ? 'Active' : 'None'}
+                          </span>
+                        </td>
                         <td class="px-6 py-4 text-right">
-                          ${d.domain ? `<button onclick="navigate('/domains/manage/${d.domain}')" class="text-xs text-slate-900 hover:text-slate-600 font-semibold">Manage →</button>` : ''}
+                          ${d.domain ? `
+                            <button onclick="navigate('/domains/manage/${d.domain}')" class="text-xs font-bold text-slate-900 hover:text-slate-600 transition-colors inline-flex items-center gap-1 group">
+                              DNS <span class="group-hover:translate-x-0.5 transition-transform w-3 h-3">${Icons.chevronRight}</span>
+                            </button>
+                          ` : '-'}
                         </td>
                       </tr>
                     `).join('')}
@@ -1494,89 +1454,64 @@
                 </table>
               </div>
             </div>
-          ` : renderEmptyState('No domains found', 'No domain data available from the API endpoint.')}
+          ` : renderEmptyState('No domains found', 'No domain data available from the API.', `<span class="w-8 h-8">${Icons.globe}</span>`)}
         </div>
       `;
     }
 
     // ============================================
-    // DNS MANAGEMENT PAGE
+    // DNS MANAGEMENT
     // ============================================
-    function renderManageDNSPage(domainName) {
+    function renderDNSManage(domainName) {
       const domain = getData('domains').find(d => d.domain === domainName || d.name === domainName);
-      if (!domain) return renderEmptyState('Domain not found', 'This domain does not exist in the API data.', '');
+      if (!domain) return renderEmptyState('Domain not found', 'This domain does not exist.');
 
-      const records = getFieldValue(domain, 'records', []);
-      const nameservers = getFieldValue(domain, 'nameservers', ['ns1.cloudstack.io', 'ns2.cloudstack.io']);
-      const fields = Object.entries(domain).filter(([key]) => !['id', 'domain', 'name', 'status', 'ssl', 'dnsStatus', 'expiryDate', 'sslExpiry', 'createdAt', 'records', 'nameservers', 'autoRenew', 'projectId'].includes(key));
+      const fields = Object.entries(domain).filter(([k]) => !['id', 'domain', 'name', 'records'].includes(k));
 
       return `
-        ${renderBreadcrumbs([{ label: 'Domains', path: '/domains' }, { label: getFieldValue(domain, 'domain', getFieldValue(domain, 'name')) }, { label: 'Manage DNS' }])}
-        <div class="animate-fade-in-up">
-          <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
+        ${renderBreadcrumbs([
+          { label: 'Domains', path: '/domains' }, 
+          { label: getFieldValue(domain, 'domain', getFieldValue(domain, 'name')) }, 
+          { label: 'DNS Management' }
+        ])}
+        
+        <div class="animate-fade-in-up space-y-6">
+          <div class="flex items-center justify-between">
             <div>
-              <h1 class="text-2xl font-bold tracking-tight text-slate-900">DNS Management</h1>
-              <p class="text-sm text-slate-500 mt-1">${getFieldValue(domain, 'domain', getFieldValue(domain, 'name'))}</p>
+              <h1 class="text-2xl font-black text-slate-900">DNS Management</h1>
+              <p class="text-slate-500 font-medium mt-1">${getFieldValue(domain, 'domain', getFieldValue(domain, 'name'))}</p>
             </div>
-            <button onclick="fetchAPI()" class="inline-flex items-center gap-2 px-4 py-2.5 btn-secondary font-medium rounded-xl text-sm">
-              <svg class="w-4 h-4 ${state.loading ? 'animate-spin' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-              Refresh
+            <button onclick="fetchAllData()" class="glass-btn-secondary px-4 py-2.5 rounded-xl text-sm font-semibold inline-flex items-center gap-2">
+              <span class="w-4 h-4">${Icons.refresh}</span> Sync
             </button>
           </div>
 
-          ${fields.length > 0 ? `
-            <div class="card p-6 mb-6">
-              <h2 class="text-base font-semibold text-slate-900 mb-4">Domain Details</h2>
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                ${fields.map(([key, value]) => `
-                  <div><p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">${capitalize(key)}</p><p class="text-sm font-medium text-slate-900 mt-1">${value || '-'}</p></div>
-                `).join('')}
-              </div>
-            </div>
-          ` : ''}
-
-          ${records.length > 0 ? `
-            <div class="card overflow-hidden mb-6">
-              <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-                <h2 class="text-base font-semibold text-slate-900">DNS Records</h2>
-                <span class="text-xs text-slate-500">${records.length} records</span>
-              </div>
-              <div class="overflow-x-auto">
-                <table class="w-full">
-                  <thead>
-                    <tr class="bg-slate-50/80">
-                      ${['Type', 'Name', 'Value', 'TTL', 'Status'].map(h => `<th class="text-left py-3 px-6 font-semibold text-slate-600 text-[11px] uppercase tracking-wider">${h}</th>`).join('')}
-                    </tr>
-                  </thead>
-                  <tbody class="divide-y divide-slate-100">
-                    ${records.map(r => `
-                      <tr class="table-row">
-                        <td class="py-3 px-6"><span class="font-mono font-bold text-slate-900 text-xs bg-slate-100 px-2 py-0.5 rounded">${getFieldValue(r, 'type')}</span></td>
-                        <td class="py-3 px-6 font-mono text-slate-900 text-xs">${getFieldValue(r, 'name')}</td>
-                        <td class="py-3 px-6 font-mono text-slate-600 text-xs truncate max-w-[200px]">${getFieldValue(r, 'value')}</td>
-                        <td class="py-3 px-6 text-slate-500 text-xs">${getFieldValue(r, 'ttl')}s</td>
-                        <td class="py-3 px-6">${renderStatusBadge(getFieldValue(r, 'status'))}</td>
-                      </tr>
-                    `).join('')}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          ` : ''}
-
-          <div class="card p-6">
-            <h2 class="text-base font-semibold text-slate-900 mb-3">Nameservers</h2>
-            <div class="space-y-2">
-              ${(Array.isArray(nameservers) ? nameservers : ['ns1.cloudstack.io', 'ns2.cloudstack.io']).map(ns => `
-                <code class="block text-sm text-slate-600 font-mono bg-slate-50 px-4 py-2 rounded-lg border border-slate-200">${ns}</code>
+          <div class="glass-card p-6">
+            <h2 class="font-bold text-slate-900 text-lg mb-4">Domain Information</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              ${fields.map(([key, value]) => `
+                <div class="bg-white/40 rounded-xl p-4 border border-white/60">
+                  <p class="text-[11px] font-black text-slate-500 uppercase tracking-wider mb-1">${capitalize(key)}</p>
+                  <p class="text-sm font-bold text-slate-900">${value || '-'}</p>
+                </div>
               `).join('')}
             </div>
-            <div class="mt-4 p-4 bg-slate-50 rounded-xl border border-slate-200">
+          </div>
+
+          <div class="glass-card p-6">
+            <h2 class="font-bold text-slate-900 text-lg mb-4">Nameservers</h2>
+            <div class="space-y-2">
+              ${['ns1.cloudstack.io', 'ns2.cloudstack.io', 'ns3.cloudstack.io'].map(ns => `
+                <code class="block text-sm text-slate-600 font-mono bg-slate-50/80 px-4 py-3 rounded-xl border border-slate-200/60 backdrop-blur-sm">${ns}</code>
+              `).join('')}
+            </div>
+            
+            <div class="mt-5 p-4 bg-blue-50/60 rounded-xl border border-blue-200/60 backdrop-blur-sm">
               <div class="flex gap-3">
-                <svg class="w-5 h-5 text-slate-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                <div class="text-sm text-slate-600">
-                  <p class="font-semibold text-slate-900">Update your domain's nameservers</p>
-                  <p class="mt-1">Point your domain to these nameservers at your registrar to use CloudStack DNS.</p>
+                <span class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5">${Icons.info}</span>
+                <div class="text-sm text-blue-900">
+                  <p class="font-bold">Update Nameservers</p>
+                  <p class="mt-1 text-blue-700/80 font-medium">Point your domain registrar to these nameservers to activate CloudStack DNS.</p>
                 </div>
               </div>
             </div>
@@ -1589,113 +1524,137 @@
     // SETTINGS PAGE
     // ============================================
     function renderSettingsPage(section) {
-      const sections = ['profile', 'api-keys', 'security', 'notifications', 'billing'];
+      const sections = ['profile', 'api-keys', 'security'];
       const active = sections.includes(section) ? section : 'profile';
-      const labels = { 'profile': 'Profile', 'api-keys': 'API Keys', 'security': 'Security', 'notifications': 'Notifications', 'billing': 'Billing' };
+      const labels = { profile: 'Profile', 'api-keys': 'API Configuration', security: 'Security' };
+      const user = getUser();
 
       return `
         ${renderBreadcrumbs([{ label: 'Settings', path: '/settings/profile' }, { label: labels[active] }])}
+        
         <div class="animate-fade-in-up">
-          <h1 class="text-2xl font-bold tracking-tight text-slate-900 mb-6">Settings</h1>
+          <h1 class="text-3xl font-bold tracking-tight text-slate-900 mb-6">Settings</h1>
+          
           <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
             <div class="lg:col-span-1">
-              <nav class="card p-2 sticky top-24 space-y-0.5">
-                ${sections.map(s => `<button onclick="navigate('/settings/${s}')" class="settings-nav-item w-full text-left px-4 py-3 rounded-lg text-sm ${active === s ? 'active' : 'text-slate-600'}">${labels[s]}</button>`).join('')}
+              <nav class="glass-card p-2 sticky top-24 space-y-1">
+                ${sections.map(s => `
+                  <button onclick="navigate('/settings/${s}')" class="w-full text-left px-4 py-3 rounded-xl text-sm font-semibold transition-all ${active === s ? 'bg-slate-900 text-white shadow-lg shadow-slate-900/20' : 'text-slate-600 hover:bg-white/80'}">
+                    ${labels[s]}
+                  </button>
+                `).join('')}
               </nav>
             </div>
-            <div class="lg:col-span-3">${renderSettingsContent(active)}</div>
+            
+            <div class="lg:col-span-3 space-y-6">
+              ${active === 'profile' ? `
+                <div class="glass-card p-8">
+                  <h2 class="text-lg font-bold text-slate-900 mb-6">Profile Information</h2>
+                  
+                  <div class="flex items-center gap-5 mb-8">
+                    <div class="w-20 h-20 bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl flex items-center justify-center text-white text-xl font-black shadow-lg">
+                      ${getInitials(user.name)}
+                    </div>
+                    <div>
+                      <button class="glass-btn-secondary px-4 py-2 rounded-xl text-sm font-semibold">Change Avatar</button>
+                      <p class="text-xs text-slate-400 mt-1.5 font-medium">JPG, PNG or GIF. Max 2MB.</p>
+                    </div>
+                  </div>
+                  
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="space-y-2">
+                      <label class="block text-sm font-bold text-slate-700">Full Name</label>
+                      <input type="text" value="${user.name}" class="w-full px-4 py-3 glass-input text-sm font-medium">
+                    </div>
+                    <div class="space-y-2">
+                      <label class="block text-sm font-bold text-slate-700">Email Address</label>
+                      <input type="email" value="${user.email}" class="w-full px-4 py-3 glass-input text-sm font-medium">
+                    </div>
+                    <div class="space-y-2">
+                      <label class="block text-sm font-bold text-slate-700">Role</label>
+                      <input type="text" value="${state.currentRole === 'super_admin' ? 'Super Administrator' : 'Client User'}" disabled class="w-full px-4 py-3 glass-input text-sm font-medium bg-slate-50/80 text-slate-500">
+                    </div>
+                    <div class="space-y-2">
+                      <label class="block text-sm font-bold text-slate-700">Timezone</label>
+                      <select class="w-full px-4 py-3 glass-input text-sm font-medium bg-white">
+                        <option>UTC-8 (Pacific Time)</option>
+                        <option>UTC-5 (Eastern Time)</option>
+                        <option selected>UTC+0 (GMT)</option>
+                        <option>UTC+1 (Central European)</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div class="flex justify-end mt-8 pt-6 border-t border-white/40">
+                    <button class="glass-btn-primary px-6 py-3 rounded-xl font-semibold text-sm">Save Changes</button>
+                  </div>
+                </div>
+              ` : ''}
+              
+              ${active === 'api-keys' ? `
+                <div class="glass-card p-8">
+                  <h2 class="text-lg font-bold text-slate-900 mb-6">API Configuration</h2>
+                  
+                  <div class="space-y-5">
+                    <div class="space-y-2">
+                      <label class="block text-sm font-bold text-slate-700">Base URL</label>
+                      <div class="flex gap-2">
+                        <input type="text" value="${API_BASE}" readonly class="flex-1 px-4 py-3 glass-input text-sm font-mono bg-slate-50/80 text-slate-600">
+                        <button onclick="navigator.clipboard.writeText('${API_BASE}'); showToast('Copied!', 'success')" class="glass-btn-secondary px-4 py-3 rounded-xl text-sm font-semibold inline-flex items-center gap-2">
+                          <span class="w-4 h-4">${Icons.copy}</span> Copy
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div class="space-y-2">
+                      <label class="block text-sm font-bold text-slate-700">Raw Response</label>
+                      <div class="bg-slate-900 rounded-2xl p-5 max-h-80 overflow-auto border border-slate-800 shadow-inner">
+                        <pre class="text-xs text-emerald-400 font-mono whitespace-pre-wrap leading-relaxed">${state.data ? JSON.stringify(state.data, null, 2).slice(0, 3000) : 'No data loaded.'}</pre>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="mt-6 p-5 bg-amber-50/80 rounded-2xl border border-amber-200/60 backdrop-blur-sm">
+                    <div class="flex gap-3">
+                      <span class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5">${Icons.warning}</span>
+                      <div>
+                        <p class="text-sm font-bold text-amber-900">API Endpoint</p>
+                        <p class="text-sm text-amber-700/80 mt-1 font-medium">All data is fetched from <code class="bg-amber-100/60 px-1.5 py-0.5 rounded font-mono text-xs">${API_BASE}</code></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ` : ''}
+              
+              ${active === 'security' ? `
+                <div class="glass-card p-8">
+                  <h2 class="text-lg font-bold text-slate-900 mb-6">Security Options</h2>
+                  <div class="space-y-4">
+                    ${[
+                      { title: 'Two-Factor Authentication', desc: 'Add extra security layer', btn: 'Enable', icon: Icons.shield },
+                      { title: 'Change Password', desc: 'Update regularly', btn: 'Update', icon: Icons.shield },
+                      { title: 'Active Sessions', desc: 'Manage logged devices', btn: 'View', icon: Icons.activity }
+                    ].map(item => `
+                      <div class="flex items-center justify-between p-5 bg-white/50 rounded-2xl border border-white/60">
+                        <div class="flex items-center gap-4">
+                          <div class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-600">
+                            <span class="w-5 h-5">${item.icon}</span>
+                          </div>
+                          <div>
+                            <p class="font-bold text-slate-900 text-sm">${item.title}</p>
+                            <p class="text-sm text-slate-500 font-medium mt-0.5">${item.desc}</p>
+                          </div>
+                        </div>
+                        <button class="glass-btn-secondary px-4 py-2 rounded-xl text-sm font-semibold">${item.btn}</button>
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+              ` : ''}
+            </div>
           </div>
         </div>
       `;
-    }
-
-    function renderSettingsContent(section) {
-      const user = getUser();
-      switch(section) {
-        case 'profile': return `
-          <div class="card p-6">
-            <h2 class="text-base font-semibold text-slate-900 mb-6">Profile Information</h2>
-            <div class="flex items-center gap-5 mb-8">
-              <div class="w-20 h-20 bg-slate-900 rounded-2xl flex items-center justify-center text-white text-xl font-bold">${getInitials(user.name)}</div>
-              <div><button class="px-4 py-2 btn-secondary font-medium rounded-xl text-sm">Change Avatar</button><p class="text-xs text-slate-400 mt-1.5">JPG, PNG or GIF. Max 2MB.</p></div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-              <div class="space-y-1.5"><label class="block text-sm font-medium text-slate-700">Full Name</label><input type="text" value="${user.name}" class="w-full px-4 py-2.5 input-field text-sm"></div>
-              <div class="space-y-1.5"><label class="block text-sm font-medium text-slate-700">Email Address</label><input type="email" value="${user.email}" class="w-full px-4 py-2.5 input-field text-sm"></div>
-              <div class="space-y-1.5"><label class="block text-sm font-medium text-slate-700">Role</label><input type="text" value="${state.currentRole === 'super_admin' ? 'Super Administrator' : 'Client User'}" disabled class="w-full px-4 py-2.5 input-field text-sm bg-slate-50 text-slate-500"></div>
-              <div class="space-y-1.5"><label class="block text-sm font-medium text-slate-700">Timezone</label><select class="w-full px-4 py-2.5 input-field text-sm bg-white"><option>UTC-8 (Pacific Time)</option><option>UTC-5 (Eastern Time)</option><option selected>UTC+0 (GMT)</option><option>UTC+1 (Central European)</option></select></div>
-            </div>
-            <div class="flex justify-end mt-8 pt-6 border-t border-slate-100"><button class="px-6 py-2.5 btn-primary font-medium rounded-xl text-sm">Save Changes</button></div>
-          </div>`;
-        case 'api-keys': return `
-          <div class="card p-6">
-            <h2 class="text-base font-semibold text-slate-900 mb-6">API Configuration</h2>
-            <div class="space-y-5">
-              <div class="space-y-1.5">
-                <label class="block text-sm font-medium text-slate-700">API Endpoint</label>
-                <div class="flex gap-2">
-                  <input type="text" value="${API_URL}" readonly class="flex-1 px-4 py-2.5 input-field text-sm bg-slate-50 text-slate-600 font-mono">
-                  <button onclick="navigator.clipboard.writeText('${API_URL}'); showToast('Copied to clipboard!', 'success')" class="px-4 py-2.5 btn-secondary font-medium rounded-xl text-sm">Copy</button>
-                </div>
-              </div>
-              <div class="space-y-1.5">
-                <label class="block text-sm font-medium text-slate-700">Raw API Response</label>
-                <div class="bg-slate-900 rounded-xl p-4 max-h-64 overflow-auto">
-                  <pre class="text-xs text-emerald-400 font-mono whitespace-pre-wrap">${state.data ? JSON.stringify(state.data, null, 2).slice(0, 2000) + (JSON.stringify(state.data).length > 2000 ? '\n...' : '') : 'No data loaded yet.'}</pre>
-                </div>
-              </div>
-            </div>
-            <div class="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-xl">
-              <div class="flex gap-3">
-                <svg class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                <div><p class="text-sm font-semibold text-amber-800">API Data Source</p><p class="text-sm text-amber-700 mt-1">All data displayed in this dashboard comes from <code class="bg-amber-100 px-1 rounded">${API_URL}</code>. Refresh to sync latest data.</p></div>
-              </div>
-            </div>
-          </div>`;
-        case 'security': return `
-          <div class="card p-6">
-            <h2 class="text-base font-semibold text-slate-900 mb-5">Security Options</h2>
-            <div class="space-y-4">
-              ${[['Two-Factor Authentication', 'Add an extra layer of security', 'Enable'], ['Change Password', 'Update your password regularly', 'Update'], ['Active Sessions', 'Manage devices where you\'re logged in', 'View All']].map(([title, desc, btn]) => `
-                <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200">
-                  <div><p class="font-semibold text-slate-900 text-sm">${title}</p><p class="text-sm text-slate-500 mt-0.5">${desc}</p></div>
-                  <button class="px-4 py-2 btn-secondary font-medium rounded-xl text-sm">${btn}</button>
-                </div>
-              `).join('')}
-            </div>
-          </div>`;
-        case 'notifications': return `
-          <div class="card p-6">
-            <h2 class="text-base font-semibold text-slate-900 mb-5">Notification Preferences</h2>
-            <div class="space-y-4">
-              ${[['Email notifications', 'Receive email alerts for important events'], ['Push notifications', 'Browser push notifications for real-time alerts'], ['Weekly digest', 'Summary of activity sent every Monday'], ['Security alerts', 'Alerts for suspicious login attempts'], ['Deployment notifications', 'Notifications when deployments complete']].map(([label, desc], i) => `
-                <div class="flex items-center justify-between py-3 ${i < 4 ? 'border-b border-slate-100' : ''}">
-                  <div><p class="font-medium text-slate-900 text-sm">${label}</p><p class="text-sm text-slate-500 mt-0.5">${desc}</p></div>
-                  <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" ${i < 3 ? 'checked' : ''} class="sr-only peer"><div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-slate-900"></div></label>
-                </div>
-              `).join('')}
-            </div>
-            <div class="flex justify-end mt-6 pt-6 border-t border-slate-100"><button class="px-6 py-2.5 btn-primary font-medium rounded-xl text-sm">Save Preferences</button></div>
-          </div>`;
-        case 'billing': return `
-          <div class="space-y-6">
-            <div class="card p-6">
-              <h2 class="text-base font-semibold text-slate-900 mb-5">Current Plan</h2>
-              <div class="flex items-center justify-between p-5 bg-slate-50 rounded-xl border border-slate-200">
-                <div><p class="text-lg font-bold text-slate-900">Professional</p><p class="text-sm text-slate-500 mt-1">$99/month • Billed monthly</p></div>
-                <button class="px-4 py-2 btn-primary font-medium rounded-xl text-sm">Upgrade Plan</button>
-              </div>
-            </div>
-            <div class="card p-6">
-              <h2 class="text-base font-semibold text-slate-900 mb-4">Data Usage</h2>
-              <div class="text-center py-6">
-                <p class="text-4xl font-bold text-slate-900">${state.data ? JSON.stringify(state.data).length : 0}</p>
-                <p class="text-sm text-slate-500 mt-1">bytes of API data received</p>
-              </div>
-            </div>
-          </div>`;
-        default: return '';
-      }
     }
 
     // ============================================
@@ -1705,7 +1664,7 @@
       if (!state.activeModal) return '';
       return `
         <div class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop" onclick="closeModal(event)">
-          <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg animate-scale-in" onclick="event.stopPropagation()">
+          <div class="glass-card w-full max-w-lg animate-scale-in shadow-2xl" onclick="event.stopPropagation()">
             ${state.activeModal === 'add-client' ? renderAddClientModal() : ''}
           </div>
         </div>
@@ -1714,16 +1673,24 @@
 
     function renderAddClientModal() {
       return `
-        <div class="p-6 border-b border-slate-100 flex items-center justify-between">
-          <h2 class="text-lg font-semibold text-slate-900">Add New Client</h2>
-          <button onclick="closeModal()" class="p-2 hover:bg-slate-100 rounded-lg transition-colors"><svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/></svg></button>
+        <div class="p-6 border-b border-white/40 flex items-center justify-between">
+          <h2 class="text-xl font-bold text-slate-900">Add New Client</h2>
+          <button onclick="closeModal()" class="p-2 hover:bg-white/60 rounded-xl transition-colors">
+            <span class="w-5 h-5 text-slate-400">${Icons.close}</span>
+          </button>
         </div>
-        <form class="p-6 space-y-4" onsubmit="event.preventDefault(); closeModal(); showToast('Client created (demo only - data comes from API)', 'info');">
-          <div class="space-y-1.5"><label class="block text-sm font-medium text-slate-700">Company Name *</label><input type="text" required class="w-full px-4 py-2.5 input-field text-sm" placeholder="Enter company name"></div>
-          <div class="space-y-1.5"><label class="block text-sm font-medium text-slate-700">Email Address *</label><input type="email" required class="w-full px-4 py-2.5 input-field text-sm" placeholder="admin@company.com"></div>
-          <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
-            <button type="button" onclick="closeModal()" class="px-5 py-2.5 btn-secondary font-medium rounded-xl text-sm">Cancel</button>
-            <button type="submit" class="px-5 py-2.5 btn-primary font-medium rounded-xl text-sm">Create Client</button>
+        <form class="p-6 space-y-4" onsubmit="event.preventDefault(); closeModal(); showToast('Demo only - data comes from API', 'info');">
+          <div class="space-y-2">
+            <label class="block text-sm font-bold text-slate-700">Company Name *</label>
+            <input type="text" required class="w-full px-4 py-3 glass-input text-sm" placeholder="Enter company name">
+          </div>
+          <div class="space-y-2">
+            <label class="block text-sm font-bold text-slate-700">Email Address *</label>
+            <input type="email" required class="w-full px-4 py-3 glass-input text-sm" placeholder="admin@company.com">
+          </div>
+          <div class="flex justify-end gap-3 pt-6 border-t border-white/40">
+            <button type="button" onclick="closeModal()" class="glass-btn-secondary px-5 py-2.5 rounded-xl font-semibold text-sm">Cancel</button>
+            <button type="submit" class="glass-btn-primary px-5 py-2.5 rounded-xl font-semibold text-sm">Create Client</button>
           </div>
         </form>
       `;
@@ -1738,18 +1705,20 @@
         form.addEventListener('submit', (e) => {
           e.preventDefault();
           const btn = document.getElementById('loginBtn');
-          const spinner = document.getElementById('login-spinner');
+          const spinner = document.getElementById('loginSpinner');
           btn.disabled = true;
           spinner.classList.remove('hidden');
-          const email = document.getElementById('loginEmail').value;
+          
           setTimeout(() => {
-            performLogin(detectRoleByEmail(email));
+            performLogin(detectRoleByEmail(document.getElementById('loginEmail').value));
             btn.disabled = false;
             spinner.classList.add('hidden');
-          }, 600);
+          }, 800);
         });
       }
     }
+
+    function initDashboardEvents() {}
 
     function quickLogin(email) {
       performLogin(detectRoleByEmail(email));
@@ -1759,25 +1728,20 @@
       state.currentView = 'dashboard';
       state.currentRole = role;
       const { path, params } = parseRoute(getRoute());
-      state.route = path || '/';
+      state.route = path;
       state.routeParams = params;
       render();
-      await fetchAPI();
+      await fetchAllData();
     }
-
-    function initDashboardInteractions() {}
 
     function logout() {
       state.currentView = 'login';
       state.currentRole = null;
-      state.route = '';
+      state.route = '/';
       state.routeParams = {};
-      state.data = null;
+      state.data = { clients: [], projects: [], databases: [], domains: [], settings: {} };
       state.loading = false;
       state.error = null;
-      state.notificationsOpen = false;
-      state.mobileSidebarOpen = false;
-      state.activeModal = null;
       window.location.hash = '';
       render();
     }
@@ -1787,30 +1751,16 @@
       render();
     }
 
-    function toggleNotifications() {
-      state.notificationsOpen = !state.notificationsOpen;
+    function openModal(type) {
+      state.activeModal = type;
       render();
     }
 
-    function openModal(modalType, itemId = null) {
-      state.activeModal = modalType;
-      state.selectedItem = itemId;
-      render();
-    }
-
-    function closeModal(event) {
-      if (event && event.target !== event.currentTarget) return;
+    function closeModal(e) {
+      if (e && e.target !== e.currentTarget) return;
       state.activeModal = null;
-      state.selectedItem = null;
       render();
     }
-
-    document.addEventListener('click', (e) => {
-      if (state.notificationsOpen && !e.target.closest('.relative')) {
-        state.notificationsOpen = false;
-        if (state.currentView === 'dashboard') render();
-      }
-    });
 
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
@@ -1819,9 +1769,7 @@
       }
     });
 
-    // ============================================
-    // INITIAL RENDER
-    // ============================================
+    // Initial Render
     render();
   </script>
 </body>
