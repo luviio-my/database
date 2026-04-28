@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CloudStack - Infrastructure Management</title>
+  <title>LuvCloud - Infrastructure Management</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -187,9 +187,18 @@
       50% { transform: translateY(-6px); }
     }
 
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
     .animate-fade-in-up { animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     .animate-scale-in { animation: scaleIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     .animate-float { animation: float 6s ease-in-out infinite; }
+    .animate-gradient { 
+      background-size: 200% 200%;
+      animation: gradientShift 8s ease infinite; 
+    }
 
     .stagger-1 { animation-delay: 0.05s; opacity: 0; }
     .stagger-2 { animation-delay: 0.1s; opacity: 0; }
@@ -256,6 +265,23 @@
       animation: fadeInUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
+    /* Hero Gradient Text */
+    .hero-gradient-text {
+      background: linear-gradient(135deg, #0f172a 0%, #3b82f6 50%, #8b5cf6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Feature Card Hover */
+    .feature-card {
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-8px) scale(1.02);
+    }
+
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: 0.01ms !important;
@@ -271,6 +297,19 @@
       align-items: center;
       justify-content: center;
     }
+
+    /* Landing Page Specific */
+    .hero-bg {
+      background: linear-gradient(135deg, 
+        rgba(99, 102, 241, 0.05) 0%, 
+        rgba(168, 85, 247, 0.05) 50%, 
+        rgba(236, 72, 153, 0.05) 100%);
+    }
+
+    .pricing-popular {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1));
+      border: 2px solid rgba(99, 102, 241, 0.3);
+    }
   </style>
 </head>
 <body class="antialiased">
@@ -283,8 +322,9 @@
     const API_BASE = "https://api.luviio.com";
     
     const state = {
-      currentView: 'login',
+      currentView: 'landing',
       currentRole: null,
+      user: null,
       route: '/',
       routeParams: {},
       sidebarOpen: true,
@@ -298,16 +338,11 @@
       toasts: []
     };
 
-    const users = {
-      super_admin: { id: 1, name: 'Sarah Chen', email: 'sarah@cloudstack.io', role: 'super_admin', company: 'CloudStack' },
-      client_user: { id: 2, name: 'Michael Torres', email: 'michael@acmecorp.com', role: 'client_user', company: 'Acme Corp' }
-    };
-
     // ============================================
     // ICON SYSTEM (Lucide-style)
     // ============================================
     const Icons = {
-      logo: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg>`,
+      logo: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>`,
       
       dashboard: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>`,
       
@@ -359,7 +394,15 @@
       
       zap: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`,
       
-      copy: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>`
+      copy: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>`,
+
+      arrowRight: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`,
+
+      star: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+
+      lock: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>`,
+
+      cloud: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 109 20h9a5 5 0 000-10z"/></svg>`
     };
 
     // ============================================
@@ -374,7 +417,7 @@
     }
 
     function getUser() {
-      return state.currentRole === 'super_admin' ? users.super_admin : users.client_user;
+      return state.user || { name: 'User', email: '', role: 'client_user', company: '' };
     }
 
     function getInitials(name) {
@@ -411,7 +454,7 @@
     }
 
     function detectRoleByEmail(email) {
-      const adminEmails = ['sarah@cloudstack.io', 'admin@cloudstack.io'];
+      const adminEmails = ['admin@luvcloud.io', 'sarah@luvcloud.io'];
       return adminEmails.includes(email.toLowerCase()) ? 'super_admin' : 'client_user';
     }
 
@@ -677,10 +720,278 @@
     function render() {
       const app = document.getElementById('app');
       switch(state.currentView) {
+        case 'landing': app.innerHTML = renderLandingPage(); initLandingEvents(); break;
         case 'login': app.innerHTML = renderLoginPage(); initLoginEvents(); break;
         case 'dashboard': app.innerHTML = renderDashboardLayout(); initDashboardEvents(); break;
-        default: app.innerHTML = renderLoginPage();
+        default: app.innerHTML = renderLandingPage();
       }
+    }
+
+    // ============================================
+    // LANDING PAGE
+    // ============================================
+    function renderLandingPage() {
+      return `
+        <!-- Navigation -->
+        <nav class="fixed top-0 left-0 right-0 z-50 glass-header">
+          <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
+                  <span class="text-white w-5 h-5">${Icons.logo}</span>
+                </div>
+                <span class="text-slate-900 font-bold text-xl tracking-tight">LuvCloud</span>
+              </div>
+              
+              <div class="hidden md:flex items-center gap-8">
+                <a href="#features" class="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Features</a>
+                <a href="#pricing" class="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Pricing</a>
+                <a href="#about" class="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">About</a>
+              </div>
+              
+              <div class="flex items-center gap-3">
+                <button onclick="showLogin()" class="glass-btn-secondary px-5 py-2.5 rounded-xl font-semibold text-sm">Sign In</button>
+                <button onclick="showLogin()" class="glass-btn-primary px-5 py-2.5 rounded-xl font-semibold text-sm">Get Started</button>
+              </div>
+            </div>
+          </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section class="pt-32 pb-20 px-6 hero-bg relative overflow-hidden">
+          <div class="absolute top-20 left-1/4 w-96 h-96 bg-indigo-200/30 rounded-full blur-3xl animate-float"></div>
+          <div class="absolute bottom-20 right-1/4 w-96 h-96 bg-purple-200/30 rounded-full blur-3xl animate-float" style="animation-delay:-3s"></div>
+          
+          <div class="max-w-7xl mx-auto relative z-10">
+            <div class="text-center max-w-4xl mx-auto">
+              <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-50/80 border border-indigo-200/60 mb-8 animate-fade-in-up">
+                <span class="w-2 h-2 bg-indigo-500 rounded-full animate-pulse"></span>
+                <span class="text-xs font-bold text-indigo-700 uppercase tracking-wider">Now with Real-time Monitoring</span>
+              </div>
+              
+              <h1 class="text-5xl md:text-7xl font-black tracking-tight hero-gradient-text mb-6 animate-fade-in-up stagger-1">
+                Infrastructure<br>Management<br>Simplified
+              </h1>
+              
+              <p class="text-lg md:text-xl text-slate-600 font-medium max-w-2xl mx-auto mb-10 animate-fade-in-up stagger-2">
+                Manage your servers, databases, domains, and projects from one powerful platform. Built for modern teams who demand excellence.
+              </p>
+              
+              <div class="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up stagger-3">
+                <button onclick="showLogin()" class="glass-btn-primary px-8 py-4 rounded-2xl font-bold text-base inline-flex items-center gap-2 group">
+                  Start Free Trial
+                  <span class="group-hover:translate-x-1 transition-transform w-5 h-5">${Icons.arrowRight}</span>
+                </button>
+                <button onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})" class="glass-btn-secondary px-8 py-4 rounded-2xl font-bold text-base inline-flex items-center gap-2">
+                  Learn More
+                </button>
+              </div>
+
+              <div class="mt-16 grid grid-cols-3 gap-8 max-w-lg mx-auto animate-fade-in-up stagger-4">
+                <div class="text-center">
+                  <p class="text-3xl font-black text-slate-900">99.9%</p>
+                  <p class="text-xs font-medium text-slate-500 mt-1">Uptime SLA</p>
+                </div>
+                <div class="text-center">
+                  <p class="text-3xl font-black text-slate-900">50ms</p>
+                  <p class="text-xs font-medium text-slate-500 mt-1">Avg Response</p>
+                </div>
+                <div class="text-center">
+                  <p class="text-3xl font-black text-slate-900">24/7</p>
+                  <p class="text-xs font-medium text-slate-500 mt-1">Support</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="py-24 px-6">
+          <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+              <h2 class="text-4xl font-black text-slate-900 mb-4">Everything You Need</h2>
+              <p class="text-lg text-slate-600 font-medium max-w-2xl mx-auto">Powerful features designed to streamline your infrastructure management workflow.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              ${[
+                { icon: Icons.server, title: 'Server Management', desc: 'Deploy and manage cloud servers with ease. Auto-scaling, load balancing, and monitoring built-in.', color: 'from-blue-500 to-cyan-500' },
+                { icon: Icons.database, title: 'Database Hosting', desc: 'MySQL, PostgreSQL, MongoDB and more. Automated backups, replication, and performance optimization.', color: 'from-emerald-500 to-teal-500' },
+                { icon: Icons.globe, title: 'DNS & Domains', desc: 'Complete domain management with DNS control, SSL certificates, and CDN integration.', color: 'from-amber-500 to-orange-500' },
+                { icon: Icons.shield, title: 'Security First', desc: 'Enterprise-grade security with DDoS protection, firewall rules, and encryption at rest.', color: 'from-purple-500 to-pink-500' },
+                { icon: Icons.activity, title: 'Real-time Monitoring', desc: 'Track performance metrics, set up alerts, and visualize your infrastructure health.', color: 'from-rose-500 to-red-500' },
+                { icon: Icons.zap, title: 'Lightning Fast', desc: 'Global edge network ensures your applications load fast for users worldwide.', color: 'from-yellow-500 to-amber-500' }
+              ].map((feature, i) => `
+                <div class="glass-card p-8 feature-card animate-fade-in-up stagger-${i+1}">
+                  <div class="w-14 h-14 bg-gradient-to-br ${feature.color} rounded-2xl flex items-center justify-center text-white shadow-lg mb-6">
+                    <span class="w-7 h-7">${feature.icon}</span>
+                  </div>
+                  <h3 class="text-xl font-bold text-slate-900 mb-3">${feature.title}</h3>
+                  <p class="text-sm text-slate-600 font-medium leading-relaxed">${feature.desc}</p>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </section>
+
+        <!-- Pricing Section -->
+        <section id="pricing" class="py-24 px-6 bg-gradient-to-b from-transparent via-slate-100/50 to-transparent">
+          <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+              <h2 class="text-4xl font-black text-slate-900 mb-4">Simple, Transparent Pricing</h2>
+              <p class="text-lg text-slate-600 font-medium">No hidden fees. No surprises. Cancel anytime.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+              ${[
+                { name: 'Starter', price: '$29', period: '/month', features: ['5 Projects', '10 Databases', '5 Domains', 'Basic Support', '99.5% Uptime'], popular: false },
+                { name: 'Professional', price: '$79', period: '/month', features: ['Unlimited Projects', '50 Databases', '25 Domains', 'Priority Support', '99.9% Uptime', 'Advanced Analytics'], popular: true },
+                { name: 'Enterprise', price: '$199', period: '/month', features: ['Everything in Pro', 'Unlimited Resources', 'Dedicated Support', 'Custom SLA', 'SSO & SAML', 'Audit Logs'], popular: false }
+              ].map((plan, i) => `
+                <div class="${plan.popular ? 'pricing-popular' : ''} glass-card p-8 feature-card animate-fade-in-up stagger-${i+1}">
+                  ${plan.popular ? '<div class="inline-block px-3 py-1 bg-indigo-500 text-white text-xs font-bold rounded-full mb-4">Most Popular</div>' : ''}
+                  <h3 class="text-2xl font-bold text-slate-900 mb-2">${plan.name}</h3>
+                  <div class="flex items-baseline gap-1 mb-6">
+                    <span class="text-5xl font-black text-slate-900">${plan.price}</span>
+                    <span class="text-slate-500 font-medium">${plan.period}</span>
+                  </div>
+                  <ul class="space-y-3 mb-8">
+                    ${plan.features.map(f => `
+                      <li class="flex items-center gap-3 text-sm font-medium text-slate-700">
+                        <span class="w-5 h-5 text-emerald-600">${Icons.check}</span>
+                        ${f}
+                      </li>
+                    `).join('')}
+                  </ul>
+                  <button onclick="showLogin()" class="w-full py-3.5 ${plan.popular ? 'glass-btn-primary' : 'glass-btn-secondary'} rounded-xl font-bold text-sm">
+                    Get Started
+                  </button>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="py-24 px-6">
+          <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+              <div>
+                <h2 class="text-4xl font-black text-slate-900 mb-6">Built for Developers,<br>By Developers</h2>
+                <p class="text-lg text-slate-600 font-medium mb-6 leading-relaxed">
+                  We understand the pain of managing infrastructure across multiple providers. That's why we built LuvCloud — a unified platform that gives you complete control without the complexity.
+                </p>
+                <div class="space-y-4">
+                  ${[
+                    'Intuitive interface designed for speed and efficiency',
+                    'Comprehensive API for automation and integrations',
+                    'Detailed documentation and active community support'
+                  ].map(item => `
+                    <div class="flex items-start gap-3">
+                      <span class="w-6 h-6 text-indigo-600 mt-0.5">${Icons.check}</span>
+                      <p class="text-sm font-medium text-slate-700">${item}</p>
+                    </div>
+                  `).join('')}
+                </div>
+                <button onclick="showLogin()" class="glass-btn-primary px-8 py-4 rounded-2xl font-bold text-base mt-8 inline-flex items-center gap-2 group">
+                  Join Thousands of Teams
+                  <span class="group-hover:translate-x-1 transition-transform w-5 h-5">${Icons.arrowRight}</span>
+                </button>
+              </div>
+              
+              <div class="glass-card p-8 relative">
+                <div class="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-2xl opacity-20 blur-2xl"></div>
+                <div class="space-y-6 relative">
+                  ${[
+                    { label: 'Active Users', value: '10,000+', icon: Icons.users },
+                    { label: 'Projects Managed', value: '150K+', icon: Icons.folder },
+                    { label: 'Uptime This Year', value: '99.99%', icon: Icons.trendingUp },
+                    { label: 'Countries Served', value: '120+', icon: Icons.globe }
+                  ].map(stat => `
+                    <div class="flex items-center gap-4 p-4 bg-white/50 rounded-xl border border-white/60">
+                      <div class="w-12 h-12 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-xl flex items-center justify-center text-indigo-600">
+                        <span class="w-6 h-6">${stat.icon}</span>
+                      </div>
+                      <div>
+                        <p class="text-2xl font-black text-slate-900">${stat.value}</p>
+                        <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">${stat.label}</p>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="py-24 px-6">
+          <div class="max-w-4xl mx-auto">
+            <div class="glass-card p-12 text-center relative overflow-hidden">
+              <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-pink-500/10"></div>
+              <div class="relative z-10">
+                <h2 class="text-4xl font-black text-slate-900 mb-4">Ready to Get Started?</h2>
+                <p class="text-lg text-slate-600 font-medium mb-8 max-w-xl mx-auto">Join thousands of teams already using LuvCloud to manage their infrastructure.</p>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                  <button onclick="showLogin()" class="glass-btn-primary px-8 py-4 rounded-2xl font-bold text-base inline-flex items-center gap-2 group">
+                    Start Your Free Trial
+                    <span class="group-hover:translate-x-1 transition-transform w-5 h-5">${Icons.arrowRight}</span>
+                  </button>
+                  <button onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})" class="glass-btn-secondary px-8 py-4 rounded-2xl font-bold text-base">
+                    View Pricing
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="py-12 px-6 border-t border-white/40">
+          <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+              <div>
+                <div class="flex items-center gap-3 mb-4">
+                  <div class="w-8 h-8 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                    <span class="text-white w-4 h-4">${Icons.logo}</span>
+                  </div>
+                  <span class="font-bold text-slate-900">LuvCloud</span>
+                </div>
+                <p class="text-sm text-slate-500 font-medium">Infrastructure management made simple.</p>
+              </div>
+              ${[
+                { title: 'Product', links: ['Features', 'Pricing', 'Documentation', 'API'] },
+                { title: 'Company', links: ['About', 'Blog', 'Careers', 'Contact'] },
+                { title: 'Support', links: ['Help Center', 'Status', 'Community', 'Changelog'] }
+              ].map(section => `
+                <div>
+                  <h4 class="font-bold text-slate-900 mb-3 text-sm">${section.title}</h4>
+                  <ul class="space-y-2">
+                    ${section.links.map(link => `
+                      <li><a href="#" class="text-sm text-slate-500 hover:text-slate-900 transition-colors font-medium">${link}</a></li>
+                    `).join('')}
+                  </ul>
+                </div>
+              `).join('')}
+            </div>
+            
+            <div class="pt-8 border-t border-white/40 flex flex-col md:flex-row items-center justify-between gap-4">
+              <p class="text-sm text-slate-500 font-medium">© 2024 LuvCloud. All rights reserved.</p>
+              <div class="flex items-center gap-6">
+                <a href="#" class="text-sm text-slate-500 hover:text-slate-900 transition-colors font-medium">Privacy Policy</a>
+                <a href="#" class="text-sm text-slate-500 hover:text-slate-900 transition-colors font-medium">Terms of Service</a>
+              </div>
+            </div>
+          </div>
+        </footer>
+      `;
+    }
+
+    function initLandingEvents() {}
+
+    function showLogin() {
+      state.currentView = 'login';
+      render();
     }
 
     // ============================================
@@ -690,26 +1001,27 @@
       return `
         <div class="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
           <!-- Background Decoration -->
-          <div class="absolute top-0 left-1/4 w-96 h-96 bg-blue-200/30 rounded-full blur-3xl animate-float"></div>
+          <div class="absolute top-0 left-1/4 w-96 h-96 bg-indigo-200/30 rounded-full blur-3xl animate-float"></div>
           <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-200/30 rounded-full blur-3xl animate-float" style="animation-delay:-3s"></div>
           
           <div class="w-full max-w-md relative z-10 animate-scale-in">
+            <!-- Back Button -->
+            <button onclick="state.currentView='landing'; render();" class="mb-6 flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors group">
+              <span class="group-hover:-translate-x-1 transition-transform w-4 h-4" style="transform: scaleX(-1)">${Icons.chevronRight}</span>
+              Back to Home
+            </button>
+
             <!-- Logo -->
             <div class="text-center mb-10">
-              <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl mb-5 shadow-xl shadow-slate-900/20 border border-white/10">
+              <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-2xl mb-5 shadow-xl shadow-indigo-500/20 border border-white/10">
                 <span class="text-white w-8 h-8">${Icons.logo}</span>
               </div>
-              <h1 class="text-3xl font-bold tracking-tight text-slate-900">CloudStack</h1>
-              <p class="text-sm text-slate-500 mt-2 font-medium">Infrastructure Management Platform</p>
+              <h1 class="text-3xl font-bold tracking-tight text-slate-900">Welcome to LuvCloud</h1>
+              <p class="text-sm text-slate-500 mt-2 font-medium">Sign in to manage your infrastructure</p>
             </div>
 
             <!-- Login Card -->
             <div class="glass-card p-8">
-              <div class="mb-6">
-                <h2 class="text-xl font-bold text-slate-900">Welcome back</h2>
-                <p class="text-sm text-slate-500 mt-1">Sign in to your account to continue</p>
-              </div>
-              
               <form id="loginForm" class="space-y-4">
                 <div class="space-y-2">
                   <label class="block text-sm font-semibold text-slate-700">Email address</label>
@@ -722,38 +1034,43 @@
                   </div>
                   <input type="password" id="loginPassword" class="w-full px-4 py-3 glass-input text-sm placeholder:text-slate-400" placeholder="Enter your password" required autocomplete="current-password">
                 </div>
+                
+                <div id="loginError" class="hidden p-3 bg-red-50/80 border border-red-200/60 rounded-xl">
+                  <p class="text-sm text-red-700 font-medium" id="loginErrorMessage"></p>
+                </div>
+
                 <button type="submit" id="loginBtn" class="w-full py-3.5 glass-btn-primary font-semibold rounded-xl text-sm flex items-center justify-center gap-2">
-                  <span>Sign in</span>
+                  <span>Sign In</span>
                   <span id="loginSpinner" class="hidden animate-spin w-4 h-4">${Icons.refresh}</span>
                 </button>
               </form>
 
               <div class="relative my-6">
                 <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-200/60"></div></div>
-                <div class="relative flex justify-center text-xs"><span class="bg-white/60 px-4 text-slate-400 font-semibold backdrop-blur-sm rounded-full">Quick Access</span></div>
+                <div class="relative flex justify-center text-xs"><span class="bg-white/60 px-4 text-slate-400 font-semibold backdrop-blur-sm rounded-full">Or continue with demo</span></div>
               </div>
 
               <div class="space-y-2.5">
-                <button onclick="quickLogin('sarah@cloudstack.io')" class="w-full flex items-center gap-3.5 px-4 py-3.5 glass-btn-secondary rounded-xl group transition-all hover:bg-white/90">
-                  <div class="w-10 h-10 bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow-md">SA</div>
+                <button onclick="quickLogin('admin@luvcloud.io')" class="w-full flex items-center gap-3.5 px-4 py-3.5 glass-btn-secondary rounded-xl group transition-all hover:bg-white/90">
+                  <div class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow-md">AD</div>
                   <div class="flex-1 text-left">
-                    <p class="text-sm font-bold text-slate-900">Super Admin</p>
-                    <p class="text-xs text-slate-500 font-medium">sarah@cloudstack.io</p>
+                    <p class="text-sm font-bold text-slate-900">Admin Demo</p>
+                    <p class="text-xs text-slate-500 font-medium">admin@luvcloud.io</p>
                   </div>
                   <span class="text-slate-300 group-hover:text-slate-600 group-hover:translate-x-1 transition-all w-4 h-4">${Icons.chevronRight}</span>
                 </button>
-                <button onclick="quickLogin('michael@acmecorp.com')" class="w-full flex items-center gap-3.5 px-4 py-3.5 glass-btn-secondary rounded-xl group transition-all hover:bg-white/90">
-                  <div class="w-10 h-10 bg-gradient-to-br from-slate-500 to-slate-600 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow-md">CU</div>
+                <button onclick="quickLogin('user@luvcloud.io')" class="w-full flex items-center gap-3.5 px-4 py-3.5 glass-btn-secondary rounded-xl group transition-all hover:bg-white/90">
+                  <div class="w-10 h-10 bg-gradient-to-br from-slate-500 to-slate-600 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow-md">US</div>
                   <div class="flex-1 text-left">
-                    <p class="text-sm font-bold text-slate-900">Client User</p>
-                    <p class="text-xs text-slate-500 font-medium">michael@acmecorp.com</p>
+                    <p class="text-sm font-bold text-slate-900">Client Demo</p>
+                    <p class="text-xs text-slate-500 font-medium">user@luvcloud.io</p>
                   </div>
                   <span class="text-slate-300 group-hover:text-slate-600 group-hover:translate-x-1 transition-all w-4 h-4">${Icons.chevronRight}</span>
                 </button>
               </div>
             </div>
             
-            <p class="text-center text-xs text-slate-400 mt-6 font-medium">© 2024 CloudStack. All rights reserved.</p>
+            <p class="text-center text-xs text-slate-400 mt-6 font-medium">© 2024 LuvCloud. All rights reserved.</p>
           </div>
         </div>
       `;
@@ -774,10 +1091,10 @@
           <!-- Sidebar -->
           <aside class="${state.mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:static inset-y-0 left-0 z-50 w-72 glass-sidebar transition-transform duration-300 flex flex-col">
             <div class="flex items-center gap-3 px-6 py-5 border-b border-white/40">
-              <div class="w-9 h-9 bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl flex items-center justify-center shadow-md">
+              <div class="w-9 h-9 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-md">
                 <span class="text-white w-4.5 h-4.5">${Icons.logo}</span>
               </div>
-              <span class="text-slate-900 font-bold text-lg tracking-tight">CloudStack</span>
+              <span class="text-slate-900 font-bold text-lg tracking-tight">LuvCloud</span>
             </div>
             
             <nav class="flex-1 overflow-y-auto py-6 px-4 space-y-1">
@@ -786,7 +1103,7 @@
             
             <div class="p-4 border-t border-white/40">
               <div class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/60 cursor-pointer transition-all group" onclick="navigate('/settings/profile')">
-                <div class="w-10 h-10 bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow-sm">${getInitials(user.name)}</div>
+                <div class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow-sm">${getInitials(user.name)}</div>
                 <div class="flex-1 min-w-0">
                   <p class="text-sm font-bold text-slate-900 truncate">${user.name}</p>
                   <p class="text-xs text-slate-500 font-medium truncate">${isSuperAdmin ? 'Administrator' : user.company}</p>
@@ -1501,7 +1818,7 @@
           <div class="glass-card p-6">
             <h2 class="font-bold text-slate-900 text-lg mb-4">Nameservers</h2>
             <div class="space-y-2">
-              ${['ns1.cloudstack.io', 'ns2.cloudstack.io', 'ns3.cloudstack.io'].map(ns => `
+              ${['ns1.luvcloud.io', 'ns2.luvcloud.io', 'ns3.luvcloud.io'].map(ns => `
                 <code class="block text-sm text-slate-600 font-mono bg-slate-50/80 px-4 py-3 rounded-xl border border-slate-200/60 backdrop-blur-sm">${ns}</code>
               `).join('')}
             </div>
@@ -1511,7 +1828,7 @@
                 <span class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5">${Icons.info}</span>
                 <div class="text-sm text-blue-900">
                   <p class="font-bold">Update Nameservers</p>
-                  <p class="mt-1 text-blue-700/80 font-medium">Point your domain registrar to these nameservers to activate CloudStack DNS.</p>
+                  <p class="mt-1 text-blue-700/80 font-medium">Point your domain registrar to these nameservers to activate LuvCloud DNS.</p>
                 </div>
               </div>
             </div>
@@ -1552,7 +1869,7 @@
                   <h2 class="text-lg font-bold text-slate-900 mb-6">Profile Information</h2>
                   
                   <div class="flex items-center gap-5 mb-8">
-                    <div class="w-20 h-20 bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl flex items-center justify-center text-white text-xl font-black shadow-lg">
+                    <div class="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-2xl flex items-center justify-center text-white text-xl font-black shadow-lg">
                       ${getInitials(user.name)}
                     </div>
                     <div>
@@ -1699,21 +2016,87 @@
     // ============================================
     // EVENT HANDLERS
     // ============================================
+    function initLandingEvents() {}
+
     function initLoginEvents() {
       const form = document.getElementById('loginForm');
       if (form) {
-        form.addEventListener('submit', (e) => {
+        form.addEventListener('submit', async function(e) {
           e.preventDefault();
+
+          const emailInput = document.getElementById('loginEmail');
+          const passwordInput = document.getElementById('loginPassword');
           const btn = document.getElementById('loginBtn');
           const spinner = document.getElementById('loginSpinner');
+          const errorDiv = document.getElementById('loginError');
+          const errorMessage = document.getElementById('loginErrorMessage');
+
+          const email = emailInput.value.trim();
+          const password = passwordInput.value;
+
+          // Reset error state
+          errorDiv.classList.add('hidden');
+
+          // Validate inputs
+          if (!email || !password) {
+            errorDiv.classList.remove('hidden');
+            errorMessage.textContent = 'Please enter both email and password.';
+            return;
+          }
+
           btn.disabled = true;
           spinner.classList.remove('hidden');
-          
-          setTimeout(() => {
-            performLogin(detectRoleByEmail(document.getElementById('loginEmail').value));
+
+          try {
+            // REAL API LOGIN CALL
+            const response = await fetch(`${API_BASE}/login`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                email: email,
+                password: password
+              })
+            });
+
+            const data = await response.json();
+
+            if (data.success && data.user) {
+              // Store user data in localStorage
+              localStorage.setItem('luvcloud_user', JSON.stringify(data.user));
+              localStorage.setItem('luvcloud_token', data.token || '');
+              
+              // Set user state
+              state.user = data.user;
+              state.currentRole = detectRoleByEmail(email);
+              
+              showToast(`Welcome back, ${data.user.name || email}!`, 'success');
+              
+              // Navigate to dashboard
+              state.currentView = 'dashboard';
+              const { path, params } = parseRoute(getRoute());
+              state.route = path;
+              state.routeParams = params;
+              render();
+              
+              // Fetch all data after login
+              await fetchAllData();
+            } else {
+              // Show error message from API
+              errorDiv.classList.remove('hidden');
+              errorMessage.textContent = data.message || 'Invalid email or password.';
+              showToast(data.message || 'Login failed', 'error');
+            }
+          } catch (error) {
+            console.error('Login error:', error);
+            errorDiv.classList.remove('hidden');
+            errorMessage.textContent = 'Connection error. Please try again.';
+            showToast('Connection error. Please try again later.', 'error');
+          } finally {
             btn.disabled = false;
             spinner.classList.add('hidden');
-          }, 800);
+          }
         });
       }
     }
@@ -1721,7 +2104,21 @@
     function initDashboardEvents() {}
 
     function quickLogin(email) {
-      performLogin(detectRoleByEmail(email));
+      // For demo purposes, simulate a successful login
+      const role = detectRoleByEmail(email);
+      const mockUser = {
+        id: role === 'super_admin' ? 1 : 2,
+        name: role === 'super_admin' ? 'Sarah Chen' : 'Michael Torres',
+        email: email,
+        role: role,
+        company: role === 'super_admin' ? 'LuvCloud' : 'Acme Corp'
+      };
+
+      localStorage.setItem('luvcloud_user', JSON.stringify(mockUser));
+      state.user = mockUser;
+      state.currentRole = role;
+
+      performLogin(role);
     }
 
     async function performLogin(role) {
@@ -1735,8 +2132,13 @@
     }
 
     function logout() {
-      state.currentView = 'login';
+      // Clear stored data
+      localStorage.removeItem('luvcloud_user');
+      localStorage.removeItem('luvcloud_token');
+      
+      state.currentView = 'landing';
       state.currentRole = null;
+      state.user = null;
       state.route = '/';
       state.routeParams = {};
       state.data = { clients: [], projects: [], databases: [], domains: [], settings: {} };
@@ -1744,6 +2146,7 @@
       state.error = null;
       window.location.hash = '';
       render();
+      showToast('You have been logged out', 'info');
     }
 
     function toggleMobileSidebar() {
@@ -1769,7 +2172,27 @@
       }
     });
 
-    // Initial Render
+    // Check for existing session on load
+    function checkExistingSession() {
+      const savedUser = localStorage.getItem('luvcloud_user');
+      if (savedUser) {
+        try {
+          const userData = JSON.parse(savedUser);
+          state.user = userData;
+          state.currentRole = detectRoleByEmail(userData.email);
+          state.currentView = 'dashboard';
+          
+          const { path, params } = parseRoute(getRoute());
+          state.route = path;
+          state.routeParams = params;
+        } catch (e) {
+          console.error('Failed to parse saved user:', e);
+        }
+      }
+    }
+
+    // Initialize
+    checkExistingSession();
     render();
   </script>
 </body>
