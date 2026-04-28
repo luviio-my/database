@@ -218,6 +218,7 @@
 </head>
 <body class="min-h-screen antialiased">
   <div id="app"></div>
+  <div id="clients"></div>
 
   <script>
     // ============================================
@@ -2019,7 +2020,9 @@
     fetch("https://api.luviio.com")
       .then(response => response.json())
       .then(data => {
-        console.log(data);
+        document.getElementById("clients").innerHTML = data
+          .map(client => `<div>${client.name}</div>`)
+          .join("");
       });
 
     // Initial render
