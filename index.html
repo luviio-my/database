@@ -2017,16 +2017,14 @@
     // ============================================
     // API FETCH
     // ============================================
-    fetch("https://api.luviio.com")
-      .then(response => response.json())
-      .then(data => {
-        document.getElementById("clients").innerHTML = data
-          .map(client => `<div>${client.name}</div>`)
-          .join("");
-      });
-
-    // Initial render
-    render();
-  </script>
+<script>
+fetch("https://api.luviio.com")
+  .then(response => response.json())
+  .then(data => {
+    document.getElementById("clients").innerHTML = data
+      .map(client => `<div>${client.name}</div>`)
+      .join("");
+  });
+</script>
 </body>
 </html>
