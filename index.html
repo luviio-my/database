@@ -1,0 +1,2023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CloudStack - Infrastructure Management</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    * { font-family: 'Inter', system-ui, sans-serif; }
+    
+    body {
+      background: #ffffff;
+      color: #0f172a;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    
+    .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
+    .animate-fade-in-up { animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .animate-slide-right { animation: slideInRight 0.3s ease-out forwards; }
+    .animate-scale-in { animation: scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    
+    .stagger-1 { animation-delay: 0.05s; opacity: 0; }
+    .stagger-2 { animation-delay: 0.1s; opacity: 0; }
+    .stagger-3 { animation-delay: 0.15s; opacity: 0; }
+    .stagger-4 { animation-delay: 0.2s; opacity: 0; }
+    .stagger-5 { animation-delay: 0.25s; opacity: 0; }
+    .stagger-6 { animation-delay: 0.3s; opacity: 0; }
+    
+    .card {
+      background: #ffffff;
+      border: 1px solid #f1f5f9;
+      border-radius: 16px;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .card-hover:hover {
+      border-color: #e2e8f0;
+      box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.06);
+      transform: translateY(-1px);
+    }
+    
+    .btn-primary {
+      background: #0f172a;
+      color: #ffffff;
+      transition: all 0.2s ease;
+    }
+    .btn-primary:hover {
+      background: #1e293b;
+      box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.2);
+      transform: translateY(-1px);
+    }
+    .btn-primary:active {
+      transform: translateY(0) scale(0.98);
+    }
+    
+    .btn-secondary {
+      background: #ffffff;
+      color: #0f172a;
+      border: 1px solid #e2e8f0;
+      transition: all 0.2s ease;
+    }
+    .btn-secondary:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+    }
+    
+    .input-field {
+      border: 1.5px solid #e2e8f0;
+      background: #ffffff;
+      transition: all 0.2s ease;
+      border-radius: 12px;
+    }
+    .input-field:focus {
+      border-color: #0f172a;
+      box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.08);
+      outline: none;
+    }
+    
+    .focus-ring:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
+    }
+    
+    .nav-item {
+      transition: all 0.15s ease;
+      border-left: 3px solid transparent;
+    }
+    .nav-item.active {
+      background: #f8fafc;
+      border-left-color: #0f172a;
+      color: #0f172a;
+      font-weight: 600;
+    }
+    .nav-item:not(.active):hover {
+      background: #f8fafc;
+      color: #334155;
+    }
+    
+    .status-pulse {
+      position: relative;
+    }
+    .status-pulse::after {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      background: inherit;
+      opacity: 0.2;
+      animation: pulse-ring 2s ease-out infinite;
+    }
+    @keyframes pulse-ring {
+      0% { transform: scale(1); opacity: 0.2; }
+      100% { transform: scale(1.8); opacity: 0; }
+    }
+    
+    .table-row {
+      transition: background-color 0.15s ease;
+    }
+    .table-row:hover {
+      background: #f8fafc;
+    }
+    
+    .modal-backdrop {
+      background: rgba(15, 23, 42, 0.5);
+      backdrop-filter: blur(4px);
+    }
+    
+    .drawer-overlay {
+      background: rgba(15, 23, 42, 0.3);
+      backdrop-filter: blur(2px);
+    }
+    
+    .progress-bar {
+      transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .breadcrumb-link {
+      color: #64748b;
+      transition: color 0.15s ease;
+    }
+    .breadcrumb-link:hover {
+      color: #0f172a;
+    }
+    
+    .settings-nav-item {
+      transition: all 0.15s ease;
+      border-left: 2px solid transparent;
+    }
+    .settings-nav-item.active {
+      background: #f8fafc;
+      border-left-color: #0f172a;
+      color: #0f172a;
+      font-weight: 600;
+    }
+    .settings-nav-item:not(.active):hover {
+      background: #f8fafc;
+      color: #334155;
+    }
+    
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+    
+    .chart-bar {
+      transition: height 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      background: #0f172a;
+      border-radius: 6px 6px 0 0;
+    }
+  </style>
+</head>
+<body class="min-h-screen antialiased">
+  <div id="app"></div>
+
+  <script>
+    // ============================================
+    // MOCK DATA
+    // ============================================
+    const mockData = {
+      superAdmin: {
+        id: 1,
+        name: 'Sarah Chen',
+        email: 'sarah@cloudstack.io',
+        role: 'super_admin',
+        company: 'CloudStack'
+      },
+      
+      clientUser: {
+        id: 2,
+        name: 'Michael Torres',
+        email: 'michael@acmecorp.com',
+        role: 'client_user',
+        company: 'Acme Corp'
+      },
+      
+      clients: [
+        { id: 1, name: 'Acme Corporation', email: 'admin@acme.com', projects: 12, domains: 24, databases: 8, status: 'active', createdAt: '2024-01-15' },
+        { id: 2, name: 'TechStart Inc', email: 'hello@techstart.io', projects: 6, domains: 14, databases: 4, status: 'active', createdAt: '2024-02-20' },
+        { id: 3, name: 'Global Media Group', email: 'it@globalmedia.com', projects: 18, domains: 42, databases: 15, status: 'active', createdAt: '2023-11-08' },
+        { id: 4, name: 'FinServe Solutions', email: 'dev@finserve.net', projects: 9, domains: 18, databases: 6, status: 'pending', createdAt: '2024-03-01' },
+        { id: 5, name: 'HealthFirst Medical', email: 'tech@healthfirst.org', projects: 4, domains: 8, databases: 3, status: 'active', createdAt: '2024-02-28' },
+        { id: 6, name: 'EduLearn Platform', email: 'ops@edulearn.edu', projects: 22, domains: 35, databases: 20, status: 'suspended', createdAt: '2023-09-12' },
+        { id: 7, name: 'RetailMax Systems', email: 'support@retailmax.com', projects: 7, domains: 16, databases: 5, status: 'active', createdAt: '2024-01-05' },
+        { id: 8, name: 'CloudNative Labs', email: 'team@cloudnative.dev', projects: 15, domains: 28, databases: 12, status: 'active', createdAt: '2023-12-18' }
+      ],
+      
+      projects: [
+        { id: 1, clientId: 1, name: 'E-commerce Platform', type: 'web', status: 'active', tech: ['React', 'Node.js', 'PostgreSQL'], lastDeploy: '2024-03-15', teamSize: 5, description: 'Full-featured e-commerce platform with payment integration and inventory management.' },
+        { id: 2, clientId: 1, name: 'Mobile App Backend', type: 'api', status: 'development', tech: ['Go', 'Redis', 'MongoDB'], lastDeploy: '2024-03-10', teamSize: 3, description: 'RESTful API backend for iOS and Android mobile applications.' },
+        { id: 3, clientId: 2, name: 'SaaS Dashboard', type: 'web', status: 'active', tech: ['Vue.js', 'Python', 'MySQL'], lastDeploy: '2024-03-14', teamSize: 4, description: 'Analytics dashboard for SaaS metrics and KPIs.' },
+        { id: 4, clientId: 3, name: 'Content Management System', type: 'cms', status: 'maintenance', tech: ['Next.js', 'Prisma'], lastDeploy: '2024-03-08', teamSize: 6, description: 'Enterprise CMS with multi-language support and workflow automation.' },
+        { id: 5, clientId: 3, name: 'Video Streaming Service', type: 'media', status: 'active', tech: ['React', 'FFmpeg', 'AWS'], lastDeploy: '2024-03-13', teamSize: 8, description: 'High-performance video streaming platform with adaptive bitrate.' },
+        { id: 6, clientId: 4, name: 'Trading Platform', type: 'fintech', status: 'development', tech: ['Angular', 'Java', 'Oracle'], lastDeploy: null, teamSize: 10, description: 'Real-time trading platform with low-latency order execution.' },
+        { id: 7, clientId: 5, name: 'Patient Portal', type: 'healthcare', status: 'active', tech: ['React', 'HIPAA Compliant DB'], lastDeploy: '2024-03-12', teamSize: 4, description: 'HIPAA-compliant patient portal with secure messaging and appointment scheduling.' },
+        { id: 8, clientId: 6, name: 'LMS System', type: 'education', status: 'suspended', tech: ['Vue.js', 'Laravel'], lastDeploy: '2024-02-20', teamSize: 3, description: 'Learning management system with course creation and student tracking.' }
+      ],
+      
+      databases: [
+        { id: 1, name: 'acme_production', type: 'PostgreSQL', size: '45.2 GB', maxStorage: '100 GB', status: 'running', connections: 127, maxConnections: 500, projectId: 1, version: '15.2', region: 'us-east-1' },
+        { id: 2, name: 'acme_analytics', type: 'MongoDB', size: '128.5 GB', maxStorage: '250 GB', status: 'running', connections: 45, maxConnections: 200, projectId: 1, version: '6.0', region: 'us-east-1' },
+        { id: 3, name: 'techstart_main', type: 'MySQL', size: '23.8 GB', maxStorage: '50 GB', status: 'running', connections: 89, maxConnections: 300, projectId: 3, version: '8.0', region: 'eu-west-1' },
+        { id: 4, name: 'globalmedia_cms', type: 'PostgreSQL', size: '89.3 GB', maxStorage: '200 GB', status: 'running', connections: 234, maxConnections: 400, projectId: 4, version: '15.2', region: 'us-west-2' },
+        { id: 5, name: 'globalmedia_media', type: 'MongoDB', size: '512.1 GB', maxStorage: '1 TB', status: 'running', connections: 67, maxConnections: 150, projectId: 5, version: '6.0', region: 'us-west-2' },
+        { id: 6, name: 'finserve_trading', type: 'Oracle', size: '256.7 GB', maxStorage: '500 GB', status: 'stopped', connections: 0, maxConnections: 800, projectId: 6, version: '19c', region: 'us-east-1' },
+        { id: 7, name: 'healthfirst_patients', type: 'PostgreSQL', size: '34.2 GB', maxStorage: '75 GB', status: 'running', connections: 56, maxConnections: 200, projectId: 7, version: '15.2', region: 'us-central-1' },
+        { id: 8, name: 'edulearn_users', type: 'MySQL', size: '12.4 GB', maxStorage: '50 GB', status: 'error', connections: 0, maxConnections: 200, projectId: 8, version: '8.0', region: 'eu-west-1' }
+      ],
+      
+      domains: [
+        { id: 1, domain: 'acmecorp.com', status: 'active', ssl: true, sslExpiry: '2025-06-15', dnsStatus: 'configured', autoRenew: true, expiryDate: '2025-06-15', projectId: 1, nameservers: ['ns1.cloudstack.io', 'ns2.cloudstack.io'] },
+        { id: 2, domain: 'www.acmecorp.com', status: 'active', ssl: true, sslExpiry: '2025-06-15', dnsStatus: 'configured', autoRenew: true, expiryDate: '2025-06-15', projectId: 1, nameservers: ['ns1.cloudstack.io', 'ns2.cloudstack.io'] },
+        { id: 3, domain: 'api.acmecorp.com', status: 'active', ssl: true, sslExpiry: '2025-06-15', dnsStatus: 'configured', autoRenew: true, expiryDate: '2025-06-15', projectId: 2, nameservers: ['ns1.cloudstack.io', 'ns2.cloudstack.io'] },
+        { id: 4, domain: 'techstart.io', status: 'active', ssl: true, sslExpiry: '2024-09-20', dnsStatus: 'pending', autoRenew: false, expiryDate: '2024-09-20', projectId: 3, nameservers: ['ns1.cloudstack.io', 'ns2.cloudstack.io'] },
+        { id: 5, domain: 'app.techstart.io', status: 'active', ssl: true, sslExpiry: '2024-09-20', dnsStatus: 'configured', autoRenew: true, expiryDate: '2024-09-20', projectId: 3, nameservers: ['ns1.cloudstack.io', 'ns2.cloudstack.io'] },
+        { id: 6, domain: 'globalmedia.com', status: 'active', ssl: true, sslExpiry: '2025-03-08', dnsStatus: 'configured', autoRenew: true, expiryDate: '2025-03-08', projectId: 4, nameservers: ['ns1.cloudstack.io', 'ns2.cloudstack.io'] },
+        { id: 7, domain: 'stream.globalmedia.com', status: 'active', ssl: true, sslExpiry: '2025-03-08', dnsStatus: 'configured', autoRenew: true, expiryDate: '2025-03-08', projectId: 5, nameservers: ['ns1.cloudstack.io', 'ns2.cloudstack.io'] },
+        { id: 8, domain: 'finserve.net', status: 'pending', ssl: false, sslExpiry: null, dnsStatus: 'not_configured', autoRenew: false, expiryDate: null, projectId: 6, nameservers: [] },
+        { id: 9, domain: 'healthfirst.org', status: 'active', ssl: true, sslExpiry: '2025-01-28', dnsStatus: 'configured', autoRenew: true, expiryDate: '2025-01-28', projectId: 7, nameservers: ['ns1.cloudstack.io', 'ns2.cloudstack.io'] },
+        { id: 10, domain: 'edulearn.edu', status: 'expired', ssl: false, sslExpiry: null, dnsStatus: 'error', autoRenew: false, expiryDate: '2024-02-12', projectId: 8, nameservers: [] }
+      ],
+      
+      dnsRecords: {
+        'acmecorp.com': [
+          { id: 1, type: 'A', name: '@', value: '192.168.1.100', ttl: '3600', status: 'active' },
+          { id: 2, type: 'CNAME', name: 'www', value: 'acmecorp.com', ttl: '3600', status: 'active' },
+          { id: 3, type: 'MX', name: '@', value: 'mail.acmecorp.com', ttl: '14400', status: 'active' },
+          { id: 4, type: 'TXT', name: '@', value: 'v=spf1 include:_spf.google.com ~all', ttl: '3600', status: 'active' },
+          { id: 5, type: 'NS', name: '@', value: 'ns1.cloudstack.io', ttl: '86400', status: 'active' },
+          { id: 6, type: 'NS', name: '@', value: 'ns2.cloudstack.io', ttl: '86400', status: 'active' }
+        ],
+        'api.acmecorp.com': [
+          { id: 1, type: 'A', name: '@', value: '192.168.1.101', ttl: '3600', status: 'active' },
+          { id: 2, type: 'TXT', name: '@', value: 'v=spf1 include:_spf.google.com ~all', ttl: '3600', status: 'active' }
+        ],
+        'techstart.io': [
+          { id: 1, type: 'A', name: '@', value: '192.168.2.100', ttl: '3600', status: 'pending' },
+          { id: 2, type: 'CNAME', name: 'app', value: 'techstart.io', ttl: '3600', status: 'active' }
+        ]
+      },
+      
+      activities: [
+        { id: 1, action: 'New database created', target: 'healthfirst_patients', user: 'Sarah Chen', time: '2 minutes ago', type: 'database' },
+        { id: 2, action: 'Domain SSL renewed', target: 'globalmedia.com', user: 'System', time: '15 minutes ago', type: 'domain' },
+        { id: 3, action: 'Project deployed', target: 'E-commerce Platform', user: 'Dev Team', time: '1 hour ago', type: 'project' },
+        { id: 4, action: 'Client account created', target: 'FinServe Solutions', user: 'Sarah Chen', time: '3 hours ago', type: 'client' },
+        { id: 5, action: 'Database backup completed', target: 'acme_production', user: 'System', time: '5 hours ago', type: 'database' },
+        { id: 6, action: 'Domain DNS updated', target: 'api.acmecorp.com', user: 'Mike Johnson', time: '6 hours ago', type: 'domain' },
+        { id: 7, action: 'Project scaled up', target: 'Video Streaming Service', user: 'DevOps Team', time: '8 hours ago', type: 'project' },
+        { id: 8, action: 'Client suspended', target: 'EduLearn Platform', user: 'Sarah Chen', time: '1 day ago', type: 'client' }
+      ],
+      
+      notifications: [
+        { id: 1, title: 'SSL Certificate Expiring', message: 'techstart.io certificate expires in 30 days', type: 'warning', read: false, time: '1h ago' },
+        { id: 2, title: 'High CPU Usage Alert', message: 'globalmedia_cms is using 92% CPU', type: 'error', read: false, time: '2h ago' },
+        { id: 3, title: 'Backup Completed', message: 'All databases backed up successfully', type: 'success', read: true, time: '5h ago' },
+        { id: 4, title: 'New Client Signup', message: 'FinServe Solutions joined CloudStack', type: 'info', read: true, time: '1d ago' }
+      ]
+    };
+
+    // ============================================
+    // APP STATE
+    // ============================================
+    const state = {
+      currentView: 'login',
+      currentRole: null,
+      route: '',
+      routeParams: {},
+      sidebarOpen: true,
+      mobileSidebarOpen: false,
+      notificationsOpen: false,
+      profileDropdownOpen: false,
+      activeModal: null,
+      selectedItem: null,
+      searchQuery: ''
+    };
+
+    // ============================================
+    // ROUTER
+    // ============================================
+    function navigate(path) {
+      window.location.hash = path;
+    }
+
+    function getRoute() {
+      const hash = window.location.hash.slice(1) || '/';
+      return hash;
+    }
+
+    function parseRoute(route) {
+      const parts = route.split('/').filter(Boolean);
+      return {
+        path: '/' + parts.join('/'),
+        params: parts
+      };
+    }
+
+    window.addEventListener('hashchange', () => {
+      const { path, params } = parseRoute(getRoute());
+      state.route = path;
+      state.routeParams = params;
+      if (state.currentView === 'dashboard') {
+        render();
+      }
+    });
+
+    // ============================================
+    // UTILITY FUNCTIONS
+    // ============================================
+    function getStatusColor(status) {
+      const colors = {
+        active: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+        running: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+        configured: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+        development: 'bg-blue-50 text-blue-700 border-blue-200',
+        pending: 'bg-amber-50 text-amber-700 border-amber-200',
+        maintenance: 'bg-purple-50 text-purple-700 border-purple-200',
+        suspended: 'bg-red-50 text-red-700 border-red-200',
+        error: 'bg-red-50 text-red-700 border-red-200',
+        stopped: 'bg-slate-100 text-slate-600 border-slate-200',
+        expired: 'bg-red-50 text-red-700 border-red-200',
+        not_configured: 'bg-slate-100 text-slate-500 border-slate-200'
+      };
+      return colors[status] || 'bg-slate-100 text-slate-600 border-slate-200';
+    }
+
+    function getStatusDot(status) {
+      const colors = {
+        active: '#10b981',
+        running: '#10b981',
+        configured: '#10b981',
+        development: '#3b82f6',
+        pending: '#f59e0b',
+        maintenance: '#a855f7',
+        suspended: '#ef4444',
+        error: '#ef4444',
+        stopped: '#94a3b8',
+        expired: '#ef4444',
+        not_configured: '#94a3b8'
+      };
+      return colors[status] || '#94a3b8';
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '-';
+      return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    function getInitials(name) {
+      return name.split(' ').map(n => n[0]).join('').toUpperCase();
+    }
+
+    function detectRoleByEmail(email) {
+      const adminEmails = ['sarah@cloudstack.io', 'admin@cloudstack.io'];
+      return adminEmails.includes(email.toLowerCase()) ? 'super_admin' : 'client_user';
+    }
+
+    function getTypeIcon(type) {
+      const icons = {
+        client: '<svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>',
+        project: '<svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>',
+        database: '<svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/></svg>',
+        domain: '<svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>'
+      };
+      return icons[type] || icons.project;
+    }
+
+    function getNavIcon(icon) {
+      const icons = {
+        dashboard: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>',
+        users: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>',
+        folder: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>',
+        database: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/></svg>',
+        globe: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>',
+        settings: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>'
+      };
+      return icons[icon] || '';
+    }
+
+    // ============================================
+    // RENDER FUNCTIONS
+    // ============================================
+    function render() {
+      const app = document.getElementById('app');
+      
+      switch(state.currentView) {
+        case 'login':
+          app.innerHTML = renderLoginPage();
+          initLoginEvents();
+          break;
+        case 'dashboard':
+          app.innerHTML = renderDashboardLayout();
+          initDashboardInteractions();
+          break;
+        default:
+          app.innerHTML = renderLoginPage();
+      }
+    }
+
+    function renderLoginPage() {
+      return `
+        <div class="min-h-screen flex items-center justify-center p-4 bg-white">
+          <div class="w-full max-w-md animate-scale-in">
+            <div class="text-center mb-10">
+              <div class="inline-flex items-center justify-center w-14 h-14 bg-slate-900 rounded-2xl mb-5 shadow-lg shadow-slate-900/20">
+                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                </svg>
+              </div>
+              <h1 class="text-2xl font-bold tracking-tight text-slate-900">CloudStack</h1>
+              <p class="text-sm text-slate-500 mt-2">Infrastructure Management Platform</p>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+              <div class="mb-6">
+                <h2 class="text-lg font-semibold text-slate-900">Welcome back</h2>
+                <p class="text-sm text-slate-500 mt-1">Sign in to your account</p>
+              </div>
+              
+              <form id="loginForm" class="space-y-4">
+                <div class="space-y-1.5">
+                  <label class="block text-sm font-medium text-slate-700">Email address</label>
+                  <input type="email" id="loginEmail" class="w-full px-4 py-2.5 input-field text-sm placeholder:text-slate-400" placeholder="you@example.com" required autocomplete="email">
+                </div>
+                
+                <div class="space-y-1.5">
+                  <div class="flex items-center justify-between">
+                    <label class="block text-sm font-medium text-slate-700">Password</label>
+                    <a href="#" class="text-xs text-slate-900 hover:text-slate-700 font-medium">Forgot password?</a>
+                  </div>
+                  <input type="password" id="loginPassword" class="w-full px-4 py-2.5 input-field text-sm placeholder:text-slate-400" placeholder="Enter your password" required autocomplete="current-password">
+                </div>
+
+                <button type="submit" class="w-full py-2.5 px-4 btn-primary font-medium rounded-xl text-sm">
+                  Sign in
+                </button>
+              </form>
+
+              <div class="relative my-6">
+                <div class="absolute inset-0 flex items-center">
+                  <div class="w-full border-t border-slate-100"></div>
+                </div>
+                <div class="relative flex justify-center text-xs">
+                  <span class="bg-white px-4 text-slate-400 font-medium">Demo credentials</span>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <button onclick="quickLogin('sarah@cloudstack.io')" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-50 border border-slate-200 rounded-xl transition-all group">
+                  <div class="w-9 h-9 bg-slate-900 rounded-lg flex items-center justify-center text-white text-xs font-bold">SA</div>
+                  <div class="flex-1 text-left">
+                    <p class="text-sm font-medium text-slate-900">Super Admin</p>
+                    <p class="text-xs text-slate-500">sarah@cloudstack.io</p>
+                  </div>
+                  <svg class="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </button>
+                
+                <button onclick="quickLogin('michael@acmecorp.com')" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-50 border border-slate-200 rounded-xl transition-all group">
+                  <div class="w-9 h-9 bg-slate-600 rounded-lg flex items-center justify-center text-white text-xs font-bold">CU</div>
+                  <div class="flex-1 text-left">
+                    <p class="text-sm font-medium text-slate-900">Client User</p>
+                    <p class="text-xs text-slate-500">michael@acmecorp.com</p>
+                  </div>
+                  <svg class="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderDashboardLayout() {
+      const isSuperAdmin = state.currentRole === 'super_admin';
+      const user = isSuperAdmin ? mockData.superAdmin : mockData.clientUser;
+      
+      return `
+        <div class="min-h-screen flex bg-white">
+          ${state.mobileSidebarOpen ? `<div class="fixed inset-0 z-40 lg:hidden drawer-overlay" onclick="toggleMobileSidebar()"></div>` : ''}
+          
+          <aside class="${state.mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 transition-transform duration-300 flex flex-col">
+            <div class="flex items-center gap-3 px-6 py-5 border-b border-slate-100">
+              <div class="w-8 h-8 bg-slate-900 rounded-lg flex items-center justify-center">
+                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                </svg>
+              </div>
+              <span class="text-slate-900 font-semibold text-base tracking-tight">CloudStack</span>
+            </div>
+
+            <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-0.5">
+              ${renderSidebarNav(isSuperAdmin)}
+            </nav>
+
+            <div class="p-4 border-t border-slate-100">
+              <div class="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-slate-50 cursor-pointer transition-colors" onclick="navigate('/settings/profile')">
+                <div class="w-8 h-8 bg-slate-900 rounded-lg flex items-center justify-center text-white text-xs font-bold">
+                  ${getInitials(user.name)}
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-slate-900 truncate">${user.name}</p>
+                  <p class="text-xs text-slate-500 truncate">${isSuperAdmin ? 'Administrator' : user.company}</p>
+                </div>
+              </div>
+            </div>
+          </aside>
+
+          <div class="flex-1 flex flex-col min-h-screen">
+            <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-b border-slate-200">
+              <div class="flex items-center justify-between px-6 lg:px-8 h-14">
+                <div class="flex items-center gap-4">
+                  <button onclick="toggleMobileSidebar()" class="lg:hidden p-2 hover:bg-slate-100 rounded-lg transition-colors">
+                    <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                  </button>
+                  
+                  <div class="hidden sm:flex items-center bg-slate-50 rounded-xl px-4 py-2 w-72 border border-slate-200 focus-within:border-slate-300 transition-all">
+                    <svg class="w-4 h-4 text-slate-400 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    <input type="text" placeholder="Search..." class="bg-transparent border-none outline-none text-sm text-slate-700 placeholder:text-slate-400 w-full">
+                    <kbd class="hidden md:inline-flex items-center px-2 py-0.5 text-[10px] text-slate-400 bg-slate-200/60 rounded font-mono ml-2">⌘K</kbd>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-1">
+                  <div class="relative">
+                    <button onclick="toggleNotifications()" class="relative p-2 hover:bg-slate-100 rounded-lg transition-colors">
+                      <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                      </svg>
+                      <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
+                    </button>
+                    ${renderNotificationsDropdown()}
+                  </div>
+
+                  <button onclick="logout()" class="ml-2 p-2 hover:bg-slate-100 rounded-lg transition-colors" title="Sign out">
+                    <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </header>
+
+            <main class="flex-1 p-6 lg:p-8 overflow-auto">
+              ${renderCurrentPage()}
+            </main>
+          </div>
+        </div>
+        ${renderModals()}
+      `;
+    }
+
+    function renderSidebarNav(isSuperAdmin) {
+      if (isSuperAdmin) {
+        const navItems = [
+          { id: '/', icon: 'dashboard', label: 'Overview' },
+          { id: '/clients', icon: 'users', label: 'Clients' },
+          { id: '/projects', icon: 'folder', label: 'Projects' },
+          { id: '/databases', icon: 'database', label: 'Databases' },
+          { id: '/domains', icon: 'globe', label: 'Domains' },
+          { id: '/settings/profile', icon: 'settings', label: 'Settings' }
+        ];
+        
+        return navItems.map(item => `
+          <button onclick="navigate('${item.id}')" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 text-sm ${state.route === item.id ? 'active' : ''}">
+            ${getNavIcon(item.icon)}
+            <span>${item.label}</span>
+          </button>
+        `).join('');
+      } else {
+        const navItems = [
+          { id: '/', icon: 'dashboard', label: 'Overview' },
+          { id: '/projects', icon: 'folder', label: 'My Projects' },
+          { id: '/domains', icon: 'globe', label: 'Domains' },
+          { id: '/databases', icon: 'database', label: 'Databases' },
+          { id: '/settings/profile', icon: 'settings', label: 'Settings' }
+        ];
+        
+        return navItems.map(item => `
+          <button onclick="navigate('${item.id}')" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 text-sm ${state.route === item.id ? 'active' : ''}">
+            ${getNavIcon(item.icon)}
+            <span>${item.label}</span>
+          </button>
+        `).join('');
+      }
+    }
+
+    function renderNotificationsDropdown() {
+      if (!state.notificationsOpen) return '';
+      return `
+        <div class="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-lg border border-slate-200 animate-scale-in overflow-hidden z-50">
+          <div class="flex items-center justify-between px-4 py-3 border-b border-slate-100">
+            <h3 class="font-semibold text-slate-900 text-sm">Notifications</h3>
+            <span class="px-2 py-0.5 bg-slate-100 text-slate-600 text-xs font-semibold rounded-full">2 new</span>
+          </div>
+          <div class="max-h-72 overflow-y-auto">
+            ${mockData.notifications.map(n => `
+              <div class="px-4 py-3 hover:bg-slate-50 cursor-pointer border-b border-slate-50 transition-colors ${!n.read ? 'bg-slate-50' : ''}">
+                <div class="flex gap-3">
+                  <div class="mt-0.5 w-2 h-2 rounded-full flex-shrink-0 mt-1.5" style="background: ${n.type === 'error' ? '#ef4444' : n.type === 'warning' ? '#f59e0b' : n.type === 'success' ? '#10b981' : '#3b82f6'}"></div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-slate-900">${n.title}</p>
+                    <p class="text-xs text-slate-500 mt-0.5">${n.message}</p>
+                    <p class="text-[11px] text-slate-400 mt-1">${n.time}</p>
+                  </div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCurrentPage() {
+      const route = state.route;
+      const params = state.routeParams;
+      const isSuperAdmin = state.currentRole === 'super_admin';
+
+      // Admin routes
+      if (route === '/') return isSuperAdmin ? renderAdminDashboard() : renderClientDashboard();
+      if (route === '/clients') return renderClientsPage();
+      if (route === '/projects') return renderProjectsPage();
+      if (route === '/databases') return renderDatabasesPage();
+      if (route === '/domains') return renderDomainsPage();
+      
+      // Dynamic routes
+      if (params[0] === 'clients' && params[1]) return renderClientDetailPage(params[1]);
+      if (params[0] === 'projects' && params[1]) return renderProjectDetailPage(params[1]);
+      if (params[0] === 'databases' && params[1]) return renderDatabaseDetailPage(params[1]);
+      if (params[0] === 'domains' && params[1] === 'manage' && params[2]) return renderManageDNSPage(params[2]);
+      
+      // Settings routes
+      if (params[0] === 'settings') {
+        const section = params[1] || 'profile';
+        return renderSettingsPage(section);
+      }
+
+      return renderAdminDashboard();
+    }
+
+    // ============================================
+    // PAGE RENDERERS
+    // ============================================
+    
+    function renderBreadcrumbs(items) {
+      return `
+        <nav class="flex items-center gap-2 text-sm mb-6 animate-fade-in">
+          ${items.map((item, i) => `
+            ${i > 0 ? '<svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>' : ''}
+            ${item.path ? `<a href="#${item.path}" class="breadcrumb-link">${item.label}</a>` : `<span class="text-slate-900 font-medium">${item.label}</span>`}
+          `).join('')}
+        </nav>
+      `;
+    }
+
+    function renderAdminDashboard() {
+      const kpis = [
+        { label: 'Total Clients', value: mockData.clients.length, change: '+12%', icon: 'users' },
+        { label: 'Active Projects', value: mockData.projects.filter(p => p.status === 'active').length, change: '+8%', icon: 'folder' },
+        { label: 'Domains', value: mockData.domains.length, change: '+24%', icon: 'globe' },
+        { label: 'Databases', value: mockData.databases.length, change: '+5%', icon: 'database' }
+      ];
+
+      return `
+        <div class="space-y-8 animate-fade-in-up">
+          <div>
+            <h1 class="text-2xl font-bold tracking-tight text-slate-900">Dashboard</h1>
+            <p class="text-sm text-slate-500 mt-1">Welcome back, Sarah! Here's what's happening.</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            ${kpis.map((kpi, i) => `
+              <div class="card p-6 card-hover animate-fade-in-up stagger-${i + 1}">
+                <div class="flex items-start justify-between">
+                  <div>
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">${kpi.label}</p>
+                    <p class="text-3xl font-bold text-slate-900 tracking-tight mt-2">${kpi.value}</p>
+                    <span class="inline-flex items-center gap-0.5 text-xs font-semibold text-emerald-600 mt-2">
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
+                      ${kpi.change}
+                    </span>
+                  </div>
+                  <div class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-600">
+                    ${getNavIcon(kpi.icon)}
+                  </div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 card p-6 animate-fade-in-up stagger-4">
+              <div class="flex items-center justify-between mb-6">
+                <h2 class="text-base font-semibold text-slate-900">Resource Usage</h2>
+                <select class="text-xs font-medium border border-slate-200 rounded-lg px-3 py-1.5 text-slate-600 bg-white">
+                  <option>Last 7 days</option>
+                  <option>Last 30 days</option>
+                </select>
+              </div>
+              <div class="h-48 flex items-end gap-3 px-2">
+                ${['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, i) => {
+                  const heights = [65, 82, 55, 92, 74, 48, 62];
+                  return `
+                    <div class="flex-1 flex flex-col items-center gap-2">
+                      <div class="w-full bg-slate-100 rounded-lg relative" style="height: 140px;">
+                        <div class="chart-bar absolute bottom-0 w-full" style="height: ${heights[i]}%;"></div>
+                      </div>
+                      <span class="text-[11px] font-medium text-slate-500">${day}</span>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+
+            <div class="card p-6 animate-fade-in-up stagger-5">
+              <h2 class="text-base font-semibold text-slate-900 mb-5">System Health</h2>
+              <div class="space-y-4">
+                ${[
+                  { label: 'CPU Usage', value: 42 },
+                  { label: 'Memory', value: 68 },
+                  { label: 'Storage', value: 54 },
+                  { label: 'Network I/O', value: 31 }
+                ].map(stat => `
+                  <div>
+                    <div class="flex items-center justify-between mb-1.5">
+                      <span class="text-xs font-medium text-slate-600">${stat.label}</span>
+                      <span class="text-xs font-bold text-slate-900">${stat.value}%</span>
+                    </div>
+                    <div class="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                      <div class="progress-bar h-full bg-slate-900 rounded-full" style="width: ${stat.value}%;"></div>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+              <div class="mt-5 pt-4 border-t border-slate-100">
+                <div class="flex items-center gap-2 bg-emerald-50 rounded-lg px-3 py-2.5">
+                  <div class="w-2 h-2 bg-emerald-500 rounded-full status-pulse"></div>
+                  <span class="text-xs font-medium text-emerald-800">All systems operational</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card overflow-hidden animate-fade-in-up stagger-6">
+            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+              <h2 class="text-base font-semibold text-slate-900">Recent Activity</h2>
+              <a href="#" class="text-xs text-slate-900 hover:text-slate-600 font-semibold">View all</a>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead>
+                  <tr class="bg-slate-50/50">
+                    <th class="text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-6 py-3">Action</th>
+                    <th class="text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-6 py-3">Target</th>
+                    <th class="text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-6 py-3">User</th>
+                    <th class="text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-6 py-3">Time</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                  ${mockData.activities.slice(0, 6).map(activity => `
+                    <tr class="table-row">
+                      <td class="px-6 py-3.5">
+                        <div class="flex items-center gap-3">
+                          <div class="w-8 h-8 rounded-lg ${activity.type === 'client' ? 'bg-blue-50' : activity.type === 'project' ? 'bg-purple-50' : activity.type === 'database' ? 'bg-emerald-50' : 'bg-amber-50'} flex items-center justify-center flex-shrink-0">
+                            ${getTypeIcon(activity.type)}
+                          </div>
+                          <span class="text-sm font-medium text-slate-900">${activity.action}</span>
+                        </div>
+                      </td>
+                      <td class="px-6 py-3.5 text-sm text-slate-600">${activity.target}</td>
+                      <td class="px-6 py-3.5 text-sm text-slate-500">${activity.user}</td>
+                      <td class="px-6 py-3.5 text-sm text-slate-400">${activity.time}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderClientDashboard() {
+      const clientProjects = mockData.projects.filter(p => p.clientId === 1);
+      return `
+        <div class="space-y-8 animate-fade-in-up">
+          <div>
+            <h1 class="text-2xl font-bold tracking-tight text-slate-900">Welcome back, Michael!</h1>
+            <p class="text-sm text-slate-500 mt-1">Here's an overview of your Acme Corp resources.</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+            <div class="card p-6 card-hover">
+              <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Projects</p>
+              <p class="text-3xl font-bold text-slate-900 tracking-tight mt-2">${clientProjects.length}</p>
+            </div>
+            <div class="card p-6 card-hover">
+              <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Domains</p>
+              <p class="text-3xl font-bold text-slate-900 tracking-tight mt-2">${mockData.domains.filter(d => [1,2,3].includes(d.projectId)).length}</p>
+            </div>
+            <div class="card p-6 card-hover">
+              <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Databases</p>
+              <p class="text-3xl font-bold text-slate-900 tracking-tight mt-2">${mockData.databases.filter(d => [1,2].includes(d.projectId)).length}</p>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-base font-semibold text-slate-900">Your Projects</h2>
+              <a href="#/projects" class="text-xs text-slate-900 hover:text-slate-600 font-semibold">View all →</a>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              ${clientProjects.map(project => `
+                <div class="card p-5 card-hover">
+                  <div class="flex items-start justify-between mb-3">
+                    <div class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-600">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+                    </div>
+                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-semibold border ${getStatusColor(project.status)}">
+                      <span class="w-1.5 h-1.5 rounded-full" style="background: ${getStatusDot(project.status)}"></span>
+                      ${project.status}
+                    </span>
+                  </div>
+                  <h3 class="font-semibold text-slate-900 mb-1 text-sm cursor-pointer hover:text-slate-600" onclick="navigate('/projects/${project.id}')">${project.name}</h3>
+                  <p class="text-xs text-slate-500 mb-3">${project.tech.join(', ')}</p>
+                  <div class="flex items-center justify-between pt-3 border-t border-slate-100 text-xs text-slate-400">
+                    <span>${project.teamSize} members</span>
+                    <span>${project.lastDeploy ? formatDate(project.lastDeploy) : 'Not deployed'}</span>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderClientsPage() {
+      return `
+        <div class="space-y-6 animate-fade-in-up">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h1 class="text-2xl font-bold tracking-tight text-slate-900">Clients</h1>
+              <p class="text-sm text-slate-500 mt-1">Manage your client accounts.</p>
+            </div>
+            <button onclick="openModal('add-client')" class="inline-flex items-center gap-2 px-4 py-2.5 btn-primary font-medium rounded-xl text-sm">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              Add Client
+            </button>
+          </div>
+
+          <div class="card overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead>
+                  <tr class="border-b border-slate-100">
+                    <th class="text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-6 py-4">Client</th>
+                    <th class="text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-6 py-4">Projects</th>
+                    <th class="text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-6 py-4">Domains</th>
+                    <th class="text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-6 py-4">Databases</th>
+                    <th class="text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-6 py-4">Status</th>
+                    <th class="text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-6 py-4">Created</th>
+                    <th class="text-right text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-6 py-4"></th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                  ${mockData.clients.map(client => `
+                    <tr class="table-row">
+                      <td class="px-6 py-4">
+                        <div class="flex items-center gap-3">
+                          <div class="w-9 h-9 bg-slate-100 rounded-lg flex items-center justify-center text-slate-600 text-xs font-semibold">
+                            ${getInitials(client.name)}
+                          </div>
+                          <div>
+                            <p class="font-semibold text-slate-900 text-sm cursor-pointer hover:text-slate-600" onclick="navigate('/clients/${client.id}')">${client.name}</p>
+                            <p class="text-xs text-slate-500 mt-0.5">${client.email}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-6 py-4 text-sm font-medium text-slate-900">${client.projects}</td>
+                      <td class="px-6 py-4 text-sm font-medium text-slate-900">${client.domains}</td>
+                      <td class="px-6 py-4 text-sm font-medium text-slate-900">${client.databases}</td>
+                      <td class="px-6 py-4">
+                        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-semibold border ${getStatusColor(client.status)}">
+                          <span class="w-1.5 h-1.5 rounded-full" style="background: ${getStatusDot(client.status)}"></span>
+                          ${client.status.charAt(0).toUpperCase() + client.status.slice(1)}
+                        </span>
+                      </td>
+                      <td class="px-6 py-4 text-sm text-slate-500">${formatDate(client.createdAt)}</td>
+                      <td class="px-6 py-4 text-right">
+                        <button onclick="navigate('/clients/${client.id}')" class="text-xs text-slate-900 hover:text-slate-600 font-semibold">View →</button>
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderClientDetailPage(clientId) {
+      const client = mockData.clients.find(c => c.id === parseInt(clientId));
+      if (!client) return '<div class="text-center py-20 text-slate-500">Client not found</div>';
+      
+      const clientProjects = mockData.projects.filter(p => p.clientId === client.id);
+      const clientDomains = mockData.domains.filter(d => clientProjects.some(p => p.id === d.projectId));
+      const clientDbs = mockData.databases.filter(db => clientProjects.some(p => p.id === db.projectId));
+
+      return `
+        ${renderBreadcrumbs([
+          { label: 'Clients', path: '/clients' },
+          { label: client.name }
+        ])}
+
+        <div class="animate-fade-in-up">
+          <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-600 text-xl font-bold">
+                ${getInitials(client.name)}
+              </div>
+              <div>
+                <h1 class="text-2xl font-bold tracking-tight text-slate-900">${client.name}</h1>
+                <p class="text-sm text-slate-500 mt-1">${client.email}</p>
+                <span class="inline-flex items-center gap-1.5 mt-2 px-2.5 py-1 rounded-lg text-xs font-semibold border ${getStatusColor(client.status)}">
+                  <span class="w-1.5 h-1.5 rounded-full" style="background: ${getStatusDot(client.status)}"></span>
+                  ${client.status.charAt(0).toUpperCase() + client.status.slice(1)}
+                </span>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="openModal('edit-client', ${client.id})" class="px-4 py-2.5 btn-secondary font-medium rounded-xl text-sm">Edit</button>
+              <button class="px-4 py-2.5 bg-red-50 text-red-600 border border-red-200 font-medium rounded-xl text-sm hover:bg-red-100 transition-colors">Suspend</button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-4 mb-8">
+            <div class="card p-5">
+              <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Projects</p>
+              <p class="text-2xl font-bold text-slate-900 mt-1">${clientProjects.length}</p>
+            </div>
+            <div class="card p-5">
+              <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Domains</p>
+              <p class="text-2xl font-bold text-slate-900 mt-1">${clientDomains.length}</p>
+            </div>
+            <div class="card p-5">
+              <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Databases</p>
+              <p class="text-2xl font-bold text-slate-900 mt-1">${clientDbs.length}</p>
+            </div>
+          </div>
+
+          <div class="card overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-100">
+              <h2 class="text-base font-semibold text-slate-900">Projects</h2>
+            </div>
+            <div class="divide-y divide-slate-100">
+              ${clientProjects.map(project => `
+                <div class="px-6 py-4 flex items-center justify-between table-row cursor-pointer" onclick="navigate('/projects/${project.id}')">
+                  <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 bg-slate-100 rounded-lg flex items-center justify-center text-slate-600">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+                    </div>
+                    <div>
+                      <p class="font-medium text-slate-900 text-sm">${project.name}</p>
+                      <p class="text-xs text-slate-500 mt-0.5">${project.tech.join(', ')}</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-semibold border ${getStatusColor(project.status)}">${project.status}</span>
+                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderProjectsPage() {
+      const isSuperAdmin = state.currentRole === 'super_admin';
+      const projects = isSuperAdmin ? mockData.projects : mockData.projects.filter(p => p.clientId === 1);
+      
+      return `
+        <div class="space-y-6 animate-fade-in-up">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h1 class="text-2xl font-bold tracking-tight text-slate-900">${isSuperAdmin ? 'Projects' : 'My Projects'}</h1>
+              <p class="text-sm text-slate-500 mt-1">${isSuperAdmin ? 'Manage all client projects.' : 'Manage your Acme Corp projects.'}</p>
+            </div>
+            <button onclick="openModal('create-project')" class="inline-flex items-center gap-2 px-4 py-2.5 btn-primary font-medium rounded-xl text-sm">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              Create Project
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            ${projects.map(project => `
+              <div class="card p-5 card-hover">
+                <div class="flex items-start justify-between mb-4">
+                  <div class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-600">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+                  </div>
+                  <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-semibold border ${getStatusColor(project.status)}">
+                    <span class="w-1.5 h-1.5 rounded-full" style="background: ${getStatusDot(project.status)}"></span>
+                    ${project.status}
+                  </span>
+                </div>
+                <h3 class="font-semibold text-slate-900 mb-2 text-sm cursor-pointer hover:text-slate-600" onclick="navigate('/projects/${project.id}')">${project.name}</h3>
+                <div class="flex flex-wrap gap-1.5 mb-4">
+                  ${project.tech.map(t => `<span class="px-2 py-0.5 bg-slate-100 text-slate-600 text-[11px] font-medium rounded-md">${t}</span>`).join('')}
+                </div>
+                <div class="flex items-center justify-between pt-3 border-t border-slate-100 text-xs text-slate-400">
+                  <span>${project.teamSize} members</span>
+                  <span>${project.lastDeploy ? formatDate(project.lastDeploy) : 'Not deployed'}</span>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderProjectDetailPage(projectId) {
+      const project = mockData.projects.find(p => p.id === parseInt(projectId));
+      if (!project) return '<div class="text-center py-20 text-slate-500">Project not found</div>';
+      
+      const client = mockData.clients.find(c => c.id === project.clientId);
+      const projectDomains = mockData.domains.filter(d => d.projectId === project.id);
+      const projectDbs = mockData.databases.filter(db => db.projectId === project.id);
+
+      return `
+        ${renderBreadcrumbs([
+          { label: 'Projects', path: '/projects' },
+          { label: project.name }
+        ])}
+
+        <div class="animate-fade-in-up">
+          <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
+            <div>
+              <div class="flex items-center gap-3 mb-2">
+                <h1 class="text-2xl font-bold tracking-tight text-slate-900">${project.name}</h1>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border ${getStatusColor(project.status)}">
+                  <span class="w-1.5 h-1.5 rounded-full" style="background: ${getStatusDot(project.status)}"></span>
+                  ${project.status}
+                </span>
+              </div>
+              <p class="text-sm text-slate-500">${project.description}</p>
+              <div class="flex flex-wrap gap-2 mt-3">
+                ${project.tech.map(t => `<span class="px-2.5 py-1 bg-slate-100 text-slate-600 text-xs font-medium rounded-lg">${t}</span>`).join('')}
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <button class="px-4 py-2.5 btn-primary font-medium rounded-xl text-sm">Deploy</button>
+              <button class="px-4 py-2.5 btn-secondary font-medium rounded-xl text-sm">Settings</button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-4 gap-4 mb-8">
+            <div class="card p-5">
+              <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Client</p>
+              <p class="text-sm font-semibold text-slate-900 mt-1">${client?.name || '-'}</p>
+            </div>
+            <div class="card p-5">
+              <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Team Size</p>
+              <p class="text-2xl font-bold text-slate-900 mt-1">${project.teamSize}</p>
+            </div>
+            <div class="card p-5">
+              <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Domains</p>
+              <p class="text-2xl font-bold text-slate-900 mt-1">${projectDomains.length}</p>
+            </div>
+            <div class="card p-5">
+              <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Databases</p>
+              <p class="text-2xl font-bold text-slate-900 mt-1">${projectDbs.length}</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="card overflow-hidden">
+              <div class="px-6 py-4 border-b border-slate-100">
+                <h2 class="text-base font-semibold text-slate-900">Domains</h2>
+              </div>
+              <div class="divide-y divide-slate-100">
+                ${projectDomains.length > 0 ? projectDomains.map(domain => `
+                  <div class="px-6 py-3.5 flex items-center justify-between table-row">
+                    <div class="flex items-center gap-3">
+                      <div class="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center text-slate-500">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9-9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+                      </div>
+                      <span class="text-sm font-medium text-slate-900">${domain.domain}</span>
+                    </div>
+                    <button onclick="navigate('/domains/manage/${domain.domain}')" class="text-xs text-slate-900 hover:text-slate-600 font-semibold">Manage →</button>
+                  </div>
+                `).join('') : '<div class="px-6 py-8 text-center text-sm text-slate-400">No domains configured</div>'}
+              </div>
+            </div>
+
+            <div class="card overflow-hidden">
+              <div class="px-6 py-4 border-b border-slate-100">
+                <h2 class="text-base font-semibold text-slate-900">Databases</h2>
+              </div>
+              <div class="divide-y divide-slate-100">
+                ${projectDbs.length > 0 ? projectDbs.map(db => `
+                  <div class="px-6 py-3.5 flex items-center justify-between table-row">
+                    <div class="flex items-center gap-3">
+                      <div class="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center text-slate-500">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/></svg>
+                      </div>
+                      <div>
+                        <p class="text-sm font-medium text-slate-900">${db.name}</p>
+                        <p class="text-xs text-slate-500">${db.type}</p>
+                      </div>
+                    </div>
+                    <button onclick="navigate('/databases/${db.id}')" class="text-xs text-slate-900 hover:text-slate-600 font-semibold">View →</button>
+                  </div>
+                `).join('') : '<div class="px-6 py-8 text-center text-sm text-slate-400">No databases configured</div>'}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderDatabasesPage() {
+      const isSuperAdmin = state.currentRole === 'super_admin';
+      const databases = isSuperAdmin ? mockData.databases : mockData.databases.filter(db => [1,2].includes(db.projectId));
+
+      return `
+        <div class="space-y-6 animate-fade-in-up">
+          <div>
+            <h1 class="text-2xl font-bold tracking-tight text-slate-900">Databases</h1>
+            <p class="text-sm text-slate-500 mt-1">Monitor and manage database instances.</p>
+          </div>
+
+          <div class="card overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead>
+                  <tr class="border-b border-slate-100">
+                    <th class="text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-6 py-4">Database</th>
+                    <th class="text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-6 py-4">Type</th>
+                    <th class="text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-6 py-4">Storage</th>
+                    <th class="text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-6 py-4">Status</th>
+                    <th class="text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-6 py-4">Connections</th>
+                    <th class="text-right text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-6 py-4"></th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                  ${databases.map(db => {
+                    const sizePercent = (parseFloat(db.size) / parseFloat(db.maxStorage)) * 100;
+                    return `
+                      <tr class="table-row">
+                        <td class="px-6 py-4">
+                          <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 bg-slate-100 rounded-lg flex items-center justify-center text-slate-600">
+                              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/></svg>
+                            </div>
+                            <span class="font-semibold text-slate-900 text-sm cursor-pointer hover:text-slate-600" onclick="navigate('/databases/${db.id}')">${db.name}</span>
+                          </div>
+                        </td>
+                        <td class="px-6 py-4"><span class="px-2.5 py-1 bg-slate-100 text-slate-700 text-xs font-semibold rounded-lg">${db.type}</span></td>
+                        <td class="px-6 py-4">
+                          <div class="w-40">
+                            <div class="flex items-center justify-between text-xs mb-1">
+                              <span class="font-semibold text-slate-900">${db.size}</span>
+                              <span class="text-slate-400">${db.maxStorage}</span>
+                            </div>
+                            <div class="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                              <div class="progress-bar h-full ${sizePercent > 80 ? 'bg-red-500' : 'bg-slate-900'} rounded-full" style="width: ${sizePercent}%;"></div>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="px-6 py-4">
+                          <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-semibold border ${getStatusColor(db.status)}">
+                            <span class="w-1.5 h-1.5 rounded-full ${db.status === 'running' ? 'status-pulse' : ''}" style="background: ${getStatusDot(db.status)}"></span>
+                            ${db.status.charAt(0).toUpperCase() + db.status.slice(1)}
+                          </span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-slate-600">${db.connections} / ${db.maxConnections}</td>
+                        <td class="px-6 py-4 text-right">
+                          <button onclick="navigate('/databases/${db.id}')" class="text-xs text-slate-900 hover:text-slate-600 font-semibold">View →</button>
+                        </td>
+                      </tr>
+                    `;
+                  }).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderDatabaseDetailPage(dbId) {
+      const db = mockData.databases.find(d => d.id === parseInt(dbId));
+      if (!db) return '<div class="text-center py-20 text-slate-500">Database not found</div>';
+      
+      const sizePercent = (parseFloat(db.size) / parseFloat(db.maxStorage)) * 100;
+      const connPercent = (db.connections / db.maxConnections) * 100;
+      const project = mockData.projects.find(p => p.id === db.projectId);
+
+      return `
+        ${renderBreadcrumbs([
+          { label: 'Databases', path: '/databases' },
+          { label: db.name }
+        ])}
+
+        <div class="animate-fade-in-up">
+          <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center text-slate-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/></svg>
+              </div>
+              <div>
+                <div class="flex items-center gap-3">
+                  <h1 class="text-2xl font-bold tracking-tight text-slate-900">${db.name}</h1>
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border ${getStatusColor(db.status)}">
+                    <span class="w-1.5 h-1.5 rounded-full ${db.status === 'running' ? 'status-pulse' : ''}" style="background: ${getStatusDot(db.status)}"></span>
+                    ${db.status.charAt(0).toUpperCase() + db.status.slice(1)}
+                  </span>
+                </div>
+                <p class="text-sm text-slate-500 mt-1">${db.type} • ${db.version} • ${db.region}</p>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              ${db.status === 'running' ? `
+                <button class="px-4 py-2.5 bg-amber-50 text-amber-700 border border-amber-200 font-medium rounded-xl text-sm hover:bg-amber-100 transition-colors">Restart</button>
+                <button class="px-4 py-2.5 bg-red-50 text-red-600 border border-red-200 font-medium rounded-xl text-sm hover:bg-red-100 transition-colors">Stop</button>
+              ` : db.status === 'stopped' ? `
+                <button class="px-4 py-2.5 btn-primary font-medium rounded-xl text-sm">Start</button>
+              ` : ''}
+              <button class="px-4 py-2.5 btn-secondary font-medium rounded-xl text-sm">Backup Now</button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-6 mb-8">
+            <div class="card p-6">
+              <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Storage Used</p>
+              <p class="text-3xl font-bold text-slate-900">${db.size}</p>
+              <p class="text-sm text-slate-400 mt-1">of ${db.maxStorage}</p>
+              <div class="mt-4 h-2 bg-slate-100 rounded-full overflow-hidden">
+                <div class="h-full ${sizePercent > 80 ? 'bg-red-500' : 'bg-slate-900'} rounded-full progress-bar" style="width: ${sizePercent}%"></div>
+              </div>
+            </div>
+            <div class="card p-6">
+              <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Active Connections</p>
+              <p class="text-3xl font-bold text-slate-900">${db.connections}</p>
+              <p class="text-sm text-slate-400 mt-1">of ${db.maxConnections} max</p>
+              <div class="mt-4 h-2 bg-slate-100 rounded-full overflow-hidden">
+                <div class="h-full bg-slate-600 rounded-full progress-bar" style="width: ${connPercent}%"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card p-6">
+            <h2 class="text-base font-semibold text-slate-900 mb-3">Connection String</h2>
+            <div class="bg-slate-900 rounded-xl p-4 overflow-x-auto">
+              <code class="text-sm text-emerald-400 font-mono whitespace-nowrap block">
+                ${db.type.toLowerCase()}://${db.name}:****@${db.name}.db.cloudstack.io:5432/${db.name}
+              </code>
+            </div>
+            <button class="mt-3 inline-flex items-center gap-1.5 text-sm text-slate-900 hover:text-slate-600 font-semibold">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+              Copy Connection String
+            </button>
+          </div>
+
+          ${project && `
+            <div class="card p-6 mt-6">
+              <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Associated Project</p>
+              <a href="#/projects/${project.id}" class="text-sm font-semibold text-slate-900 hover:text-slate-600">${project.name}</a>
+            </div>
+          `}
+        </div>
+      `;
+    }
+
+    function renderDomainsPage() {
+      const isSuperAdmin = state.currentRole === 'super_admin';
+      const domains = isSuperAdmin ? mockData.domains : mockData.domains.filter(d => [1,2,3].includes(d.projectId));
+
+      return `
+        <div class="space-y-6 animate-fade-in-up">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h1 class="text-2xl font-bold tracking-tight text-slate-900">${isSuperAdmin ? 'Domains' : 'My Domains'}</h1>
+              <p class="text-sm text-slate-500 mt-1">Manage domain names and DNS configurations.</p>
+            </div>
+            <button onclick="openModal('add-domain')" class="inline-flex items-center gap-2 px-4 py-2.5 btn-primary font-medium rounded-xl text-sm">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              Add Domain
+            </button>
+          </div>
+
+          <div class="card overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead>
+                  <tr class="border-b border-slate-100">
+                    <th class="text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-6 py-4">Domain</th>
+                    <th class="text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-6 py-4">Status</th>
+                    <th class="text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-6 py-4">SSL</th>
+                    <th class="text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-6 py-4">DNS</th>
+                    <th class="text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-6 py-4">Expiry</th>
+                    <th class="text-right text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-6 py-4"></th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                  ${domains.map(domain => `
+                    <tr class="table-row">
+                      <td class="px-6 py-4 font-semibold text-slate-900 text-sm">${domain.domain}</td>
+                      <td class="px-6 py-4">
+                        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-semibold border ${getStatusColor(domain.status)}">
+                          <span class="w-1.5 h-1.5 rounded-full" style="background: ${getStatusDot(domain.status)}"></span>
+                          ${domain.status.charAt(0).toUpperCase() + domain.status.slice(1)}
+                        </span>
+                      </td>
+                      <td class="px-6 py-4">
+                        ${domain.ssl ? '<span class="text-emerald-600 text-sm font-semibold">Active</span>' : '<span class="text-slate-400 text-sm">None</span>'}
+                      </td>
+                      <td class="px-6 py-4">
+                        <span class="text-sm ${domain.dnsStatus === 'configured' ? 'text-emerald-600 font-medium' : 'text-amber-600 font-medium'}">${domain.dnsStatus.replace('_', ' ')}</span>
+                      </td>
+                      <td class="px-6 py-4 text-sm text-slate-600">${formatDate(domain.expiryDate)}</td>
+                      <td class="px-6 py-4 text-right">
+                        <button onclick="navigate('/domains/manage/${domain.domain}')" class="text-xs text-slate-900 hover:text-slate-600 font-semibold">Manage DNS →</button>
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderManageDNSPage(domainName) {
+      const domain = mockData.domains.find(d => d.domain === domainName);
+      if (!domain) return '<div class="text-center py-20 text-slate-500">Domain not found</div>';
+      
+      const records = mockData.dnsRecords[domainName] || [];
+
+      return `
+        ${renderBreadcrumbs([
+          { label: 'Domains', path: '/domains' },
+          { label: domain.domain },
+          { label: 'Manage DNS' }
+        ])}
+
+        <div class="animate-fade-in-up">
+          <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
+            <div>
+              <h1 class="text-2xl font-bold tracking-tight text-slate-900">DNS Management</h1>
+              <p class="text-sm text-slate-500 mt-1">${domain.domain}</p>
+            </div>
+            <button class="inline-flex items-center gap-2 px-4 py-2.5 btn-primary font-medium rounded-xl text-sm">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              Add Record
+            </button>
+          </div>
+
+          <div class="card overflow-hidden mb-6">
+            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+              <h2 class="text-base font-semibold text-slate-900">DNS Records</h2>
+              <span class="text-xs text-slate-500">${records.length} records</span>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead>
+                  <tr class="bg-slate-50/80">
+                    <th class="text-left py-3 px-6 font-semibold text-slate-600 text-[11px] uppercase tracking-wider">Type</th>
+                    <th class="text-left py-3 px-6 font-semibold text-slate-600 text-[11px] uppercase tracking-wider">Name</th>
+                    <th class="text-left py-3 px-6 font-semibold text-slate-600 text-[11px] uppercase tracking-wider">Value</th>
+                    <th class="text-left py-3 px-6 font-semibold text-slate-600 text-[11px] uppercase tracking-wider">TTL</th>
+                    <th class="text-left py-3 px-6 font-semibold text-slate-600 text-[11px] uppercase tracking-wider">Status</th>
+                    <th class="text-right py-3 px-6 font-semibold text-slate-600 text-[11px] uppercase tracking-wider">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                  ${records.map(record => `
+                    <tr class="table-row">
+                      <td class="py-3 px-6"><span class="font-mono font-bold text-slate-900 text-xs bg-slate-100 px-2 py-0.5 rounded">${record.type}</span></td>
+                      <td class="py-3 px-6 font-mono text-slate-900 text-xs">${record.name}</td>
+                      <td class="py-3 px-6 font-mono text-slate-600 text-xs truncate max-w-[200px]">${record.value}</td>
+                      <td class="py-3 px-6 text-slate-500 text-xs">${record.ttl}s</td>
+                      <td class="py-3 px-6">
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold border ${getStatusColor(record.status)}">
+                          <span class="w-1.5 h-1.5 rounded-full" style="background: ${getStatusDot(record.status)}"></span>
+                          ${record.status}
+                        </span>
+                      </td>
+                      <td class="py-3 px-6 text-right">
+                        <div class="flex items-center justify-end gap-1">
+                          <button class="p-1.5 hover:bg-slate-100 rounded-md transition-colors" title="Edit">
+                            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                          </button>
+                          <button class="p-1.5 hover:bg-red-50 rounded-md transition-colors" title="Delete">
+                            <svg class="w-3.5 h-3.5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card p-6">
+            <h2 class="text-base font-semibold text-slate-900 mb-3">Nameservers</h2>
+            <div class="space-y-2">
+              ${domain.nameservers.map(ns => `
+                <code class="block text-sm text-slate-600 font-mono bg-slate-50 px-4 py-2 rounded-lg border border-slate-200">${ns}</code>
+              `).join('')}
+            </div>
+            <div class="mt-4 p-4 bg-slate-50 rounded-xl border border-slate-200">
+              <div class="flex gap-3">
+                <svg class="w-5 h-5 text-slate-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <div class="text-sm text-slate-600">
+                  <p class="font-semibold text-slate-900">Update your domain's nameservers</p>
+                  <p class="mt-1">Point your domain to these nameservers at your registrar to use CloudStack DNS.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderSettingsPage(section) {
+      const sections = ['profile', 'api-keys', 'security', 'notifications', 'billing'];
+      const activeSection = sections.includes(section) ? section : 'profile';
+      
+      const sectionLabels = {
+        'profile': 'Profile',
+        'api-keys': 'API Keys',
+        'security': 'Security',
+        'notifications': 'Notifications',
+        'billing': 'Billing'
+      };
+
+      return `
+        ${renderBreadcrumbs([
+          { label: 'Settings', path: '/settings/profile' },
+          { label: sectionLabels[activeSection] }
+        ])}
+
+        <div class="animate-fade-in-up">
+          <h1 class="text-2xl font-bold tracking-tight text-slate-900 mb-6">Settings</h1>
+
+          <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <div class="lg:col-span-1">
+              <nav class="card p-2 sticky top-24 space-y-0.5">
+                ${sections.map(s => `
+                  <button onclick="navigate('/settings/${s}')" class="settings-nav-item w-full text-left px-4 py-3 rounded-lg text-sm ${activeSection === s ? 'active' : 'text-slate-600'}">
+                    ${sectionLabels[s]}
+                  </button>
+                `).join('')}
+              </nav>
+            </div>
+
+            <div class="lg:col-span-3">
+              ${renderSettingsContent(activeSection)}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderSettingsContent(section) {
+      switch(section) {
+        case 'profile': return renderProfileSettings();
+        case 'api-keys': return renderAPIKeysSettings();
+        case 'security': return renderSecuritySettings();
+        case 'notifications': return renderNotificationsSettings();
+        case 'billing': return renderBillingSettings();
+        default: return renderProfileSettings();
+      }
+    }
+
+    function renderProfileSettings() {
+      const user = state.currentRole === 'super_admin' ? mockData.superAdmin : mockData.clientUser;
+      
+      return `
+        <div class="card p-6">
+          <h2 class="text-base font-semibold text-slate-900 mb-6">Profile Information</h2>
+          
+          <div class="flex items-center gap-5 mb-8">
+            <div class="w-20 h-20 bg-slate-900 rounded-2xl flex items-center justify-center text-white text-xl font-bold">
+              ${getInitials(user.name)}
+            </div>
+            <div>
+              <button class="px-4 py-2 btn-secondary font-medium rounded-xl text-sm">Change Avatar</button>
+              <p class="text-xs text-slate-400 mt-1.5">JPG, PNG or GIF. Max 2MB.</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="space-y-1.5">
+              <label class="block text-sm font-medium text-slate-700">Full Name</label>
+              <input type="text" value="${user.name}" class="w-full px-4 py-2.5 input-field text-sm">
+            </div>
+            <div class="space-y-1.5">
+              <label class="block text-sm font-medium text-slate-700">Email Address</label>
+              <input type="email" value="${user.email}" class="w-full px-4 py-2.5 input-field text-sm">
+            </div>
+            <div class="space-y-1.5">
+              <label class="block text-sm font-medium text-slate-700">Role</label>
+              <input type="text" value="${state.currentRole === 'super_admin' ? 'Super Administrator' : 'Client User'}" disabled class="w-full px-4 py-2.5 input-field text-sm bg-slate-50 text-slate-500">
+            </div>
+            <div class="space-y-1.5">
+              <label class="block text-sm font-medium text-slate-700">Timezone</label>
+              <select class="w-full px-4 py-2.5 input-field text-sm bg-white">
+                <option>UTC-8 (Pacific Time)</option>
+                <option>UTC-5 (Eastern Time)</option>
+                <option selected>UTC+0 (GMT)</option>
+                <option>UTC+1 (Central European)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="flex justify-end mt-8 pt-6 border-t border-slate-100">
+            <button class="px-6 py-2.5 btn-primary font-medium rounded-xl text-sm">Save Changes</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderAPIKeysSettings() {
+      return `
+        <div class="card p-6">
+          <h2 class="text-base font-semibold text-slate-900 mb-6">API Configuration</h2>
+          
+          <div class="space-y-5">
+            <div class="space-y-1.5">
+              <label class="block text-sm font-medium text-slate-700">API Endpoint</label>
+              <div class="flex gap-2">
+                <input type="text" value="https://api.cloudstack.io/v1" readonly class="flex-1 px-4 py-2.5 input-field text-sm bg-slate-50 text-slate-600 font-mono">
+                <button class="px-4 py-2.5 btn-secondary font-medium rounded-xl text-sm">Copy</button>
+              </div>
+            </div>
+            
+            <div class="space-y-1.5">
+              <label class="block text-sm font-medium text-slate-700">API Key</label>
+              <div class="flex gap-2">
+                <input type="password" value="cs_live_****************************" readonly class="flex-1 px-4 py-2.5 input-field text-sm bg-slate-50 text-slate-600 font-mono">
+                <button class="px-4 py-2.5 btn-secondary font-medium rounded-xl text-sm">Show</button>
+                <button class="px-4 py-2.5 bg-red-50 text-red-600 border border-red-200 font-medium rounded-xl text-sm hover:bg-red-100 transition-colors">Regenerate</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+            <div class="flex gap-3">
+              <svg class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+              </svg>
+              <div>
+                <p class="text-sm font-semibold text-amber-800">Keep your API key secret</p>
+                <p class="text-sm text-amber-700 mt-1">Your API key provides full access to your account. Never share it publicly or commit it to version control.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderSecuritySettings() {
+      return `
+        <div class="space-y-6">
+          <div class="card p-6">
+            <h2 class="text-base font-semibold text-slate-900 mb-5">Security Options</h2>
+            <div class="space-y-4">
+              <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200">
+                <div>
+                  <p class="font-semibold text-slate-900 text-sm">Two-Factor Authentication</p>
+                  <p class="text-sm text-slate-500 mt-0.5">Add an extra layer of security</p>
+                </div>
+                <button class="px-4 py-2 btn-primary font-medium rounded-xl text-sm">Enable</button>
+              </div>
+              
+              <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200">
+                <div>
+                  <p class="font-semibold text-slate-900 text-sm">Change Password</p>
+                  <p class="text-sm text-slate-500 mt-0.5">Update your password regularly</p>
+                </div>
+                <button class="px-4 py-2 btn-secondary font-medium rounded-xl text-sm">Update</button>
+              </div>
+              
+              <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200">
+                <div>
+                  <p class="font-semibold text-slate-900 text-sm">Active Sessions</p>
+                  <p class="text-sm text-slate-500 mt-0.5">Manage devices where you're logged in</p>
+                </div>
+                <button class="px-4 py-2 btn-secondary font-medium rounded-xl text-sm">View All</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderNotificationsSettings() {
+      return `
+        <div class="card p-6">
+          <h2 class="text-base font-semibold text-slate-900 mb-5">Notification Preferences</h2>
+          <div class="space-y-4">
+            ${[
+              { label: 'Email notifications', desc: 'Receive email alerts for important events' },
+              { label: 'Push notifications', desc: 'Browser push notifications for real-time alerts' },
+              { label: 'Weekly digest', desc: 'Summary of activity sent every Monday' },
+              { label: 'Security alerts', desc: 'Alerts for suspicious login attempts' },
+              { label: 'Deployment notifications', desc: 'Notifications when deployments complete' }
+            ].map((item, i) => `
+              <div class="flex items-center justify-between py-3 ${i < 4 ? 'border-b border-slate-100' : ''}">
+                <div>
+                  <p class="font-medium text-slate-900 text-sm">${item.label}</p>
+                  <p class="text-sm text-slate-500 mt-0.5">${item.desc}</p>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" ${i < 3 ? 'checked' : ''} class="sr-only peer">
+                  <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-slate-900"></div>
+                </label>
+              </div>
+            `).join('')}
+          </div>
+          <div class="flex justify-end mt-6 pt-6 border-t border-slate-100">
+            <button class="px-6 py-2.5 btn-primary font-medium rounded-xl text-sm">Save Preferences</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderBillingSettings() {
+      return `
+        <div class="space-y-6">
+          <div class="card p-6">
+            <h2 class="text-base font-semibold text-slate-900 mb-5">Current Plan</h2>
+            <div class="flex items-center justify-between p-5 bg-slate-50 rounded-xl border border-slate-200">
+              <div>
+                <p class="text-lg font-bold text-slate-900">Professional</p>
+                <p class="text-sm text-slate-500 mt-1">$99/month • Billed monthly</p>
+              </div>
+              <button class="px-4 py-2 btn-primary font-medium rounded-xl text-sm">Upgrade Plan</button>
+            </div>
+          </div>
+
+          <div class="card p-6">
+            <h2 class="text-base font-semibold text-slate-900 mb-5">Payment Method</h2>
+            <div class="flex items-center gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200">
+              <div class="w-12 h-8 bg-slate-200 rounded flex items-center justify-center text-xs font-bold text-slate-600">VISA</div>
+              <div class="flex-1">
+                <p class="font-medium text-slate-900 text-sm">•••• •••• •••• 4242</p>
+                <p class="text-xs text-slate-500 mt-0.5">Expires 12/2025</p>
+              </div>
+              <button class="text-sm text-slate-900 hover:text-slate-600 font-semibold">Edit</button>
+            </div>
+          </div>
+
+          <div class="card p-6">
+            <h2 class="text-base font-semibold text-slate-900 mb-4">Recent Invoices</h2>
+            <div class="divide-y divide-slate-100">
+              ${[
+                { date: 'Mar 1, 2024', amount: '$99.00', status: 'Paid' },
+                { date: 'Feb 1, 2024', amount: '$99.00', status: 'Paid' },
+                { date: 'Jan 1, 2024', amount: '$99.00', status: 'Paid' }
+              ].map(invoice => `
+                <div class="flex items-center justify-between py-3">
+                  <div>
+                    <p class="text-sm font-medium text-slate-900">${invoice.date}</p>
+                    <p class="text-xs text-slate-500 mt-0.5">CloudStack Professional</p>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="text-sm font-semibold text-slate-900">${invoice.amount}</span>
+                    <span class="text-xs text-emerald-600 font-medium bg-emerald-50 px-2 py-0.5 rounded-md">${invoice.status}</span>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ============================================
+    // MODALS
+    // ============================================
+    function renderModals() {
+      if (!state.activeModal) return '';
+      const modals = {
+        'add-client': renderAddClientModal,
+        'edit-client': renderEditClientModal,
+        'create-project': renderCreateProjectModal,
+        'add-domain': renderAddDomainModal
+      };
+      const renderer = modals[state.activeModal];
+      if (!renderer) return '';
+      return `
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop" onclick="closeModal(event)">
+          <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg animate-scale-in" onclick="event.stopPropagation()">
+            ${renderer()}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderAddClientModal() {
+      return `
+        <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+          <h2 class="text-lg font-semibold text-slate-900">Add New Client</h2>
+          <button onclick="closeModal()" class="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+            <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <form class="p-6 space-y-4" onsubmit="event.preventDefault(); closeModal();">
+          <div class="space-y-1.5">
+            <label class="block text-sm font-medium text-slate-700">Company Name *</label>
+            <input type="text" required class="w-full px-4 py-2.5 input-field text-sm" placeholder="Enter company name">
+          </div>
+          <div class="space-y-1.5">
+            <label class="block text-sm font-medium text-slate-700">Email Address *</label>
+            <input type="email" required class="w-full px-4 py-2.5 input-field text-sm" placeholder="admin@company.com">
+          </div>
+          <div class="space-y-1.5">
+            <label class="block text-sm font-medium text-slate-700">Plan</label>
+            <select class="w-full px-4 py-2.5 input-field text-sm bg-white">
+              <option>Starter</option>
+              <option selected>Professional</option>
+              <option>Enterprise</option>
+            </select>
+          </div>
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input type="checkbox" checked class="w-4 h-4 rounded border-slate-300 text-slate-900 focus:ring-slate-500">
+            <span class="text-sm text-slate-600">Send welcome email</span>
+          </label>
+          <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
+            <button type="button" onclick="closeModal()" class="px-5 py-2.5 btn-secondary font-medium rounded-xl text-sm">Cancel</button>
+            <button type="submit" class="px-5 py-2.5 btn-primary font-medium rounded-xl text-sm">Create Client</button>
+          </div>
+        </form>
+      `;
+    }
+
+    function renderEditClientModal() {
+      const client = mockData.clients.find(c => c.id === state.selectedItem) || mockData.clients[0];
+      return `
+        <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+          <h2 class="text-lg font-semibold text-slate-900">Edit Client</h2>
+          <button onclick="closeModal()" class="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+            <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <form class="p-6 space-y-4" onsubmit="event.preventDefault(); closeModal();">
+          <div class="space-y-1.5">
+            <label class="block text-sm font-medium text-slate-700">Company Name *</label>
+            <input type="text" value="${client.name}" required class="w-full px-4 py-2.5 input-field text-sm">
+          </div>
+          <div class="space-y-1.5">
+            <label class="block text-sm font-medium text-slate-700">Email Address *</label>
+            <input type="email" value="${client.email}" required class="w-full px-4 py-2.5 input-field text-sm">
+          </div>
+          <div class="space-y-1.5">
+            <label class="block text-sm font-medium text-slate-700">Status</label>
+            <select class="w-full px-4 py-2.5 input-field text-sm bg-white">
+              <option ${client.status === 'active' ? 'selected' : ''}>Active</option>
+              <option ${client.status === 'pending' ? 'selected' : ''}>Pending</option>
+              <option ${client.status === 'suspended' ? 'selected' : ''}>Suspended</option>
+            </select>
+          </div>
+          <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
+            <button type="button" onclick="closeModal()" class="px-5 py-2.5 btn-secondary font-medium rounded-xl text-sm">Cancel</button>
+            <button type="submit" class="px-5 py-2.5 btn-primary font-medium rounded-xl text-sm">Save Changes</button>
+          </div>
+        </form>
+      `;
+    }
+
+    function renderCreateProjectModal() {
+      return `
+        <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+          <h2 class="text-lg font-semibold text-slate-900">Create New Project</h2>
+          <button onclick="closeModal()" class="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+            <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <form class="p-6 space-y-4" onsubmit="event.preventDefault(); closeModal();">
+          <div class="space-y-1.5">
+            <label class="block text-sm font-medium text-slate-700">Project Name *</label>
+            <input type="text" required class="w-full px-4 py-2.5 input-field text-sm" placeholder="My Awesome Project">
+          </div>
+          ${state.currentRole === 'super_admin' && `
+            <div class="space-y-1.5">
+              <label class="block text-sm font-medium text-slate-700">Client</label>
+              <select class="w-full px-4 py-2.5 input-field text-sm bg-white">
+                ${mockData.clients.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+              </select>
+            </div>
+          `}
+          <div class="space-y-1.5">
+            <label class="block text-sm font-medium text-slate-700">Project Type</label>
+            <select class="w-full px-4 py-2.5 input-field text-sm bg-white">
+              <option value="web">Web Application</option>
+              <option value="api">API / Backend</option>
+              <option value="cms">Content Management</option>
+              <option value="media">Media / Streaming</option>
+              <option value="fintech">Financial / Trading</option>
+            </select>
+          </div>
+          <div class="space-y-1.5">
+            <label class="block text-sm font-medium text-slate-700">Tech Stack</label>
+            <input type="text" class="w-full px-4 py-2.5 input-field text-sm" placeholder="React, Node.js, PostgreSQL">
+          </div>
+          <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
+            <button type="button" onclick="closeModal()" class="px-5 py-2.5 btn-secondary font-medium rounded-xl text-sm">Cancel</button>
+            <button type="submit" class="px-5 py-2.5 btn-primary font-medium rounded-xl text-sm">Create Project</button>
+          </div>
+        </form>
+      `;
+    }
+
+    function renderAddDomainModal() {
+      return `
+        <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+          <h2 class="text-lg font-semibold text-slate-900">Add New Domain</h2>
+          <button onclick="closeModal()" class="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+            <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <form class="p-6 space-y-4" onsubmit="event.preventDefault(); closeModal();">
+          <div class="space-y-1.5">
+            <label class="block text-sm font-medium text-slate-700">Domain Name *</label>
+            <div class="flex gap-0">
+              <span class="inline-flex items-center px-3 bg-slate-50 border border-r-0 border-slate-200 rounded-l-xl text-slate-500 text-sm">https://</span>
+              <input type="text" required class="flex-1 px-4 py-2.5 border border-slate-200 rounded-r-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-400" placeholder="yourdomain.com">
+            </div>
+          </div>
+          <div class="space-y-1.5">
+            <label class="block text-sm font-medium text-slate-700">Associated Project</label>
+            <select class="w-full px-4 py-2.5 input-field text-sm bg-white">
+              <option value="">Select a project...</option>
+              ${mockData.projects.map(p => `<option value="${p.id}">${p.name}</option>`).join('')}
+            </select>
+          </div>
+          <div class="space-y-3">
+            <label class="flex items-center gap-3 cursor-pointer">
+              <input type="checkbox" checked class="w-4 h-4 rounded border-slate-300 text-slate-900 focus:ring-slate-500">
+              <span class="text-sm text-slate-700">Enable SSL Certificate</span>
+            </label>
+            <label class="flex items-center gap-3 cursor-pointer">
+              <input type="checkbox" checked class="w-4 h-4 rounded border-slate-300 text-slate-900 focus:ring-slate-500">
+              <span class="text-sm text-slate-700">Auto-renew domain</span>
+            </label>
+          </div>
+          <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
+            <button type="button" onclick="closeModal()" class="px-5 py-2.5 btn-secondary font-medium rounded-xl text-sm">Cancel</button>
+            <button type="submit" class="px-5 py-2.5 btn-primary font-medium rounded-xl text-sm">Add Domain</button>
+          </div>
+        </form>
+      `;
+    }
+
+    // ============================================
+    // EVENT HANDLERS
+    // ============================================
+    function initLoginEvents() {
+      const loginForm = document.getElementById('loginForm');
+      if (loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const email = document.getElementById('loginEmail').value;
+          performLogin(detectRoleByEmail(email));
+        });
+      }
+    }
+
+    function quickLogin(email) {
+      performLogin(detectRoleByEmail(email));
+    }
+
+    function performLogin(role) {
+      state.currentView = 'dashboard';
+      state.currentRole = role;
+      const { path } = parseRoute(getRoute());
+      state.route = path === '/' ? '/' : path;
+      state.routeParams = parseRoute(getRoute()).params;
+      if (state.route === '/' || !state.route) {
+        navigate(role === 'super_admin' ? '/' : '/');
+      }
+      render();
+    }
+
+    function initDashboardInteractions() {}
+
+    function logout() {
+      state.currentView = 'login';
+      state.currentRole = null;
+      state.route = '';
+      state.routeParams = {};
+      state.notificationsOpen = false;
+      state.mobileSidebarOpen = false;
+      window.location.hash = '';
+      render();
+    }
+
+    function toggleMobileSidebar() {
+      state.mobileSidebarOpen = !state.mobileSidebarOpen;
+      render();
+    }
+
+    function toggleNotifications() {
+      state.notificationsOpen = !state.notificationsOpen;
+      render();
+    }
+
+    function openModal(modalType, itemId = null) {
+      state.activeModal = modalType;
+      state.selectedItem = itemId;
+      state.notificationsOpen = false;
+      render();
+    }
+
+    function closeModal(event) {
+      if (event && event.target !== event.currentTarget) return;
+      state.activeModal = null;
+      state.selectedItem = null;
+      render();
+    }
+
+    document.addEventListener('click', (e) => {
+      if (state.notificationsOpen && !e.target.closest('.relative')) {
+        state.notificationsOpen = false;
+        render();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (state.activeModal) closeModal();
+        if (state.mobileSidebarOpen) {
+          state.mobileSidebarOpen = false;
+          render();
+        }
+      }
+    });
+
+    // Initial render
+    render();
+  </script>
+</body>
+</html>
